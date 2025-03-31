@@ -82,4 +82,14 @@ async function testInvoke() {
   return "testInvoke";
 }
 
+/**
+ *
+ * Trial Test
+ *
+ * 1. Load in mock trial
+ * 2. Test trial
+ * 3. View 'trial' results
+ *
+ */
+
 testInvoke();

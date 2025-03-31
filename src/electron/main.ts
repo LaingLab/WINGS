@@ -56,6 +56,7 @@ app.on("ready", () => {
 
   if (isDev()) {
     mainWindow.loadURL("http://localhost:5123");
+    mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(pathResolver.getUIPath());
   }
@@ -115,7 +116,11 @@ ipcMainHandle("recording", async (type, params) => {
       break;
     case "save-recording-file":
       {
-        const { filePath, data } = params;
+        const { fileName, data } = params;
+        const filePath = path.join(
+          pathResolver.getProjectDirectory(),
+          `/recordings/${fileName}.mp4`,
+        );
         fs.writeFileSync(filePath, Buffer.from(data));
         return { success: true, filePath };
       }

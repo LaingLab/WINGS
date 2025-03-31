@@ -25,3 +25,8 @@ export function error(message: string, error?: any) {
   console.error(`!! ${message} `);
   return { status: 0, message: `!! ${message}`, data: null };
 }
+
+export function trialLog(message: string, ...args: any[]) {
+  console.log(`\n> ${message}`, ...args);
+  return `> ${message}`;
+}

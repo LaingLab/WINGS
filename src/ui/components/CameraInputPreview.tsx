@@ -9,7 +9,6 @@ export default function CameraInputPreview() {
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [outputPath, setOutputPath] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const recorderRef = useRef<RecordRTC | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -61,16 +60,17 @@ export default function CameraInputPreview() {
     };
   }, []);
 
-  const handleSelectOutputFolder = async () => {
-    const path = await (window as any).electronIPC.recording(
-      "select-output-folder",
-    );
-    if (path) setOutputPath(path);
-  };
+  useEffect(() => {
+    if (trialData.status == "active" && !isRecording) {
+      handleStartRecording;
+    } else if (trialData.status == "inactive" && isRecording) {
+      handleStopRecording;
+    }
+  }, [trialData]);
 
   const handleStartRecording = async () => {
-    if (!selectedDevice || !outputPath || !streamRef.current) {
-      alert("Please select a camera and output path first.");
+    if (!selectedDevice || !streamRef.current) {
+      alert("Please select a camera first.");
       return;
     }
 
@@ -112,12 +112,12 @@ export default function CameraInputPreview() {
           const arrayBuffer = await blob.arrayBuffer();
           const result = await (window as any).electronIPC.recording(
             "save-recording-file",
-            { filePath: outputPath, data: arrayBuffer },
+            { fileName: trialData.videoFileName, data: arrayBuffer },
           );
 
           if (result.success) {
             setIsRecording(false);
-            alert(`Video saved: ${result.filePath}`);
+            alert(`Video saved: ${trialData.videoFileName}.mp4`);
           } else {
             alert(`Failed to save video: ${result.message}`);
           }

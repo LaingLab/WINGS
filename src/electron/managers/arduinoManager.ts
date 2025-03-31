@@ -20,11 +20,22 @@ async function connect(path: string) {
       port: path,
     });
     let led: any;
+    let beamBreak: any;
 
     board.on("ready", () => {
-      console.log("Board ready...");
+      beamBreak = new five.Switch(4);
       led = new five.Led(13);
-      led.blink(500);
+      waiting = false;
+
+      beamBreak.on("close", () => {
+        if (!waiting) {
+          console.log("broken");
+          led.on();
+          wait(500).then(() => {
+            led.off();
+          });
+        }
+      });
     });
     board.on("exit", () => {
       led.off();

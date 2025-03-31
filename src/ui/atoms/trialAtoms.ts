@@ -7,7 +7,7 @@ export const trialDataAtom = atom({
   arduinoPath: "",
   cameraPath: "",
   btDeviceMac: "DB:58:B9:A7:EF:12",
-  status: "disabled",
+  status: "inactive",
   duration: "",
   trialParams: {
     ledPin: 12,
