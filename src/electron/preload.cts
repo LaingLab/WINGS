@@ -14,7 +14,9 @@ const ipcInvoke = (key, ...args) => {
 
 electron.contextBridge.exposeInMainWorld("electronIPC", {
   sendFrameAction: (payload) => ipcSend("sendFrameAction", payload),
+  arduino: async (type, params) => ipcInvoke("arduino", type, params),
   recording: async (type, params) => ipcInvoke("recording", type, params),
+  io: async (type, params) => ipcInvoke("io", type, params),
   // ipcInvoke
   testInvoke: async (params) => ipcInvoke("test-invoke", params),
 

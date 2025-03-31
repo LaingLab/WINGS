@@ -38,3 +38,15 @@
 .nodrag {
   -webkit-app-region: no-drag;
 }
+
+@layer components {
+  .trialGridSide {
+    @apply flex h-full flex-col gap-3 rounded-xl border border-white/5 bg-neutral-950/40 p-3;
+  }
+  .trialGridBox {
+    @apply flex w-full flex-col justify-center gap-1 rounded-xl border border-white/10 bg-neutral-950 p-3 text-lg;
+  }
+  .trialGridBoxInput {
+    @apply w-full rounded-md border border-white/20 bg-neutral-800 p-3 text-base;
+  }
+}

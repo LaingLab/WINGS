@@ -7,6 +7,7 @@ import createTray from "./utils/tray.js";
 import createMenu from "./utils/menu.js";
 
 import pathResolver from "./pathResolver.js";
+import managers from "./managers.js";
 
 let mainWindow: BrowserWindow;
 
@@ -76,14 +77,6 @@ app.on("ready", () => {
   createTray(mainWindow);
   handleCloseEvents(mainWindow);
   createMenu(mainWindow);
-
-  // Register protocol for local file access
-  protocol.registerFileProtocol("local-file", (request, callback) => {
-    const filePath = decodeURIComponent(
-      request.url.replace("local-file://", ""),
-    );
-    callback({ path: filePath });
-  });
 });
 
 // Exit app on window close
@@ -91,21 +84,6 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
-});
-
-ipcMainHandle("test-invoke", async (params) => {
-  const date = new Date(params);
-  const formattedDate = date.toLocaleString("en-US", {
-    dateStyle: "medium",
-    timeStyle: "medium",
-  });
-  console.log("Received params:", formattedDate);
-
-  mainWindow.webContents.send(
-    "test-on",
-    `[Main] Hello from main! ${formattedDate}`,
-  );
-  return "Hello from main";
 });
 
 ipcMainOn("test-send", (params) => {
@@ -142,5 +120,23 @@ ipcMainHandle("recording", async (type, params) => {
         return { success: true, filePath };
       }
       break;
+  }
+});
+
+ipcMainHandle("arduino", async (type, params) => {
+  switch (type) {
+    case "connect":
+      return managers.arduinoManager.connect(params?.path);
+    case "run-trial":
+      return managers.arduinoManager.runTrial();
+    case "disconnect":
+      return managers.arduinoManager.disconnect();
+  }
+});
+
+ipcMainHandle("io", async (type, params) => {
+  switch (type) {
+    case "get-serial-devices":
+      return await managers.ioManager.getSerialDevices();
   }
 });

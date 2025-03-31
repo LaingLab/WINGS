@@ -1,22 +1,14 @@
 import { SerialPort } from "serialport";
 
 async function getSerialDevices() {
-  try {
-    const ports = await SerialPort.list();
-    return ports.map((port) => ({
-      ...port,
-      path: port.path,
-      manufacturer: port.manufacturer,
-      serialNumber: port.serialNumber,
-      pnpId: port.pnpId,
-      locationId: port.locationId,
-      vendorId: port.vendorId,
-      productId: port.productId,
-    }));
-  } catch (error) {
-    console.error("Error listing serial ports:", error);
-    return [];
+  console.log("Device -- [get-serial-devices]");
+  const ports = await SerialPort.list();
+  const filteredPorts = ports.filter((port) => port.vendorId && port.productId);
+  if (filteredPorts.length === 0) {
+    console.log("no serial devices found");
+    return { success: false, message: "No serial devices found", data: [] };
   }
+  return filteredPorts;
 }
 
 export default {

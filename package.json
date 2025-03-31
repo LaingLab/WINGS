@@ -22,6 +22,7 @@
   "dependencies": {
     "@abandonware/noble": "^1.9.2-26",
     "johnny-five": "^2.1.0",
+    "jotai": "^2.12.2",
     "lucide-react": "^0.474.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -30,6 +31,7 @@
     "tailwind-merge": "^3.0.2"
   },
   "devDependencies": {
+    "@electron/rebuild": "^3.7.1",
     "@eslint/js": "^9.21.0",
     "@tailwindcss/vite": "^4.0.3",
     "@types/react": "^19.0.10",
