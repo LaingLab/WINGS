@@ -32,7 +32,7 @@ import { trialDataAtom } from "../atoms/trialAtoms";
 import { useAtom } from "jotai";
 import ArduinoSelect from "../components/ArduinoSelect";
 
-import { runTrial } from "../api/trialAPI";
+import { primeBeamBreak, runTrial, unprimeBeamBreak } from "../api/trialAPI";
 
 export default function TrialPage() {
   const [trialData, setTrialData] = useAtom(trialDataAtom);

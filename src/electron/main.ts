@@ -9,7 +9,7 @@ import createMenu from "./utils/menu.js";
 import pathResolver from "./pathResolver.js";
 import managers from "./managers.js";
 
-let mainWindow: BrowserWindow;
+export let mainWindow: BrowserWindow;
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -87,6 +87,7 @@ app.on("window-all-closed", () => {
   }
 });
 
+// IPC Handlers
 ipcMainOn("test-send", (params) => {
   console.log("Received params:", params);
 
@@ -95,6 +96,13 @@ ipcMainOn("test-send", (params) => {
     `[Main] Recieved from renderer: ${params}`,
   );
   return;
+});
+
+ipcMainHandle("io", async (type, params) => {
+  switch (type) {
+    case "get-serial-devices":
+      return await managers.ioManager.getSerialDevices();
+  }
 });
 
 ipcMainHandle("recording", async (type, params) => {
@@ -131,17 +139,12 @@ ipcMainHandle("recording", async (type, params) => {
 ipcMainHandle("arduino", async (type, params) => {
   switch (type) {
     case "connect":
-      return managers.arduinoManager.connect(params?.path);
-    case "run-trial":
-      return managers.arduinoManager.runTrial();
+      return managers.arduinoManager.connect(params?.path ? params.path : null);
+    case "prime":
+      return managers.arduinoManager.prime();
+    case "unprime":
+      return managers.arduinoManager.unprime();
     case "disconnect":
       return managers.arduinoManager.disconnect();
-  }
-});
-
-ipcMainHandle("io", async (type, params) => {
-  switch (type) {
-    case "get-serial-devices":
-      return await managers.ioManager.getSerialDevices();
   }
 });

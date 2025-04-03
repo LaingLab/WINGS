@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import SomeOtherPage from "./pages/SomeOtherPage";
 import RecordingPage from "./pages/RecordingPage";
 import TrialPage from "./pages/TrialPage";
+import ArduinoPage from "./pages/ArduinoPage";
 
 export default function App() {
   return (
@@ -24,7 +25,7 @@ export default function App() {
             <Route path="/some-other-path" element={<SomeOtherPage />} />
             <Route path="/recording" element={<RecordingPage />} />
             <Route path="/bluetooth" element={<>Bluetooth Page</>} />
-            <Route path="/arduino" element={<>Arduino Page</>} />
+            <Route path="/arduino" element={<ArduinoPage />} />
             <Route path="/trial" element={<TrialPage />} />
           </Routes>
         </div>

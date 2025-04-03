@@ -6,17 +6,8 @@
 const initializeTrial = async (trialData) => {
   console.log("Initializing Trial...");
   try {
-    const connected = await window.electronIPC
-      .arduino("connect", trialData.arduinoPath)
-      .then(() => {
-        if (connected != "ready") {
-          console.error("Arduino not connected.");
-          return "arduino not connected.";
-        }
-
-        console.log("Arduino ", trialData.arduinoPath, " connected.");
-        return true;
-      });
+    await window.electronIPC.arduino("connect", trialData.arduinoPath);
+    return true;
   } catch (e) {
     console.error("Error init trial", e);
     return false;
@@ -76,6 +67,22 @@ export const runTrial = async (trialData) => {
    *    output data to user - frontend/backend
    *
    */
+};
+
+export const primeBeamBreak = async () => {
+  try {
+    await window.electronIPC.arduino("prime", null);
+  } catch (e) {
+    console.error("Error priming", e);
+  }
+};
+
+export const unprimeBeamBreak = async () => {
+  try {
+    await window.electronIPC.arduino("unprime", null);
+  } catch (e) {
+    console.error("Error unpriming", e);
+  }
 };
 
 const trialCleanUp = async () => {

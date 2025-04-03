@@ -1,33 +1,31 @@
 import electron from "electron";
 
-interface Recording {
-  name: string;
-  path: string;
-  url: string;
-  created: number;
-}
-
-const ipcInvoke = (key, ...args) => {
-  console.log(`Preload: Invoking ${key} with args:`, args);
-  return electron.ipcRenderer.invoke(key, ...args);
-};
-
 electron.contextBridge.exposeInMainWorld("electronIPC", {
-  sendFrameAction: (payload) => ipcSend("sendFrameAction", payload),
-  arduino: async (type, params) => ipcInvoke("arduino", type, params),
-  recording: async (type, params) => ipcInvoke("recording", type, params),
+  // Custom Methods
   io: async (type, params) => ipcInvoke("io", type, params),
-  // ipcInvoke
+
+  recording: async (type, params) => ipcInvoke("recording", type, params),
+
+  arduino: async (type, params) => ipcInvoke("arduino", type, params),
+  onArduinoUpdate: (callback) => ipcOn("arduino-update", callback),
+  onArduinoLog: (callback) => ipcOn("arduino-log", callback),
+
+  // Frame Actions
+  sendFrameAction: (payload) => ipcSend("sendFrameAction", payload),
+
+  // Default Methods
   testInvoke: async (params) => ipcInvoke("test-invoke", params),
-
-  // ipcSend
   testSend: async (params) => ipcSend("test-send", params),
-
-  // ipcOn
   testOn: (callback) => ipcOn("test-on", callback),
 });
 
+const ipcInvoke = (key, ...args) => {
+  console.log(`Invoking ${key} with args:`, args);
+  return electron.ipcRenderer.invoke(key, ...args);
+};
+
 function ipcOn(key, callback) {
+  console.log(`Adding listener for ${key}`);
   const wrappedCallback = (_event, ...args) => callback(...args);
   electron.ipcRenderer.on(key, wrappedCallback);
   return () =>
@@ -36,5 +34,6 @@ function ipcOn(key, callback) {
 }
 
 function ipcSend(key, payload) {
+  console.log(`Sending ${key} with payload:`, payload);
   electron.ipcRenderer.send(key, payload);
 }

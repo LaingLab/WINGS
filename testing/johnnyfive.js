@@ -1,5 +1,5 @@
 import five from "johnny-five";
-import { mainWindow } from "../main.js";
+import ps from "prompt-sync";
 
 let primed = false;
 let waiting = false;
@@ -15,33 +15,18 @@ const wait = async (ms) => {
   waiting = false;
 };
 
-const log = (message: string) => {
-  console.log(`[Arduino] <LOG> ${message}`);
-  mainWindow.webContents.send("arduino-log", `[Arduino] ${message}`);
-};
-
-const update = (data: string) => {
-  console.log(`[Arduino] <UPDATE> ${data}`);
-  mainWindow.webContents.send("arduino-update", data);
-};
-
 function disconnect() {
   board = null;
   led = null;
   gasSensor = null;
   beamBreak = null;
-  primed = false;
-  waiting = false;
-  log("Disconnected");
-  update("disconnected");
 }
 
 async function prime() {
   if (!primed) {
-    log("Priming...");
+    console.log("priming...");
     await wait(1000);
     primed = true;
-    update("primed");
     return "primed";
   } else {
     return unprime();
@@ -50,18 +35,17 @@ async function prime() {
 
 async function unprime() {
   if (primed) {
-    log("Unpriming...");
+    console.log("unpriming...");
     await wait(1000);
     primed = false;
-    update("unprimed");
     return "unprimed";
   } else {
-    log("Already unprimed!");
+    console.log("Already unprimed!");
     return "unprimed";
   }
 }
 
-async function connect(pathName = null) {
+async function connect(pathName) {
   try {
     if (board) {
       disconnect();
@@ -73,13 +57,12 @@ async function connect(pathName = null) {
     });
 
     board.on("ready", () => {
-      log("Board Ready!");
-      update("initializing");
+      console.log("[connect] Board Ready!");
       initBoard();
     });
 
     board.on("exit", () => {
-      log("Board disconnected.");
+      console.log("[connect] Board disconnected.");
       led.off();
       disconnect();
     });
@@ -101,8 +84,7 @@ async function initBoard() {
   } catch (e) {
     console.error(e);
   } finally {
-    log("Board initialized.");
-    update("connected");
+    console.log("[initBoard] Board initialized.");
     eventListeners();
   }
 }
@@ -118,12 +100,12 @@ async function eventListeners() {
 
   beamBreak.on("close", () => {
     if (!waiting && primed) {
-      log("Broken");
+      console.log("broken");
       breakCycle().then(() => {
         led.off();
       });
     } else if (!waiting && !primed) {
-      log("Unprimed... cannot break cycle.");
+      console.log("unprimed... cannot break cycle.");
       waiting = true;
       wait(1000).then(() => {
         waiting = false;
@@ -135,31 +117,29 @@ async function eventListeners() {
 async function breakCycle() {
   waiting = true;
 
-  log("Blinking");
   led.blink(500);
 
   await wait(4250).then(() => {
-    log("Blinking More...");
     led.blink(250);
   });
 
   await wait(4125).then(() => {
-    log("Blinking MORE...");
     led.blink(125);
   });
 
   await wait(4125).then(() => {
-    log("BLINKED!");
     led.stop();
     led.on();
   });
 
   await wait(3000).then(() => {
-    log("Blunked.");
     waiting = false;
   });
 
   return 1;
 }
 
-export default { connect, disconnect, prime, unprime };
+const prompt = ps({ sigint: true });
+
+let pathName = prompt("Enter device path: ");
+connect(pathName);
