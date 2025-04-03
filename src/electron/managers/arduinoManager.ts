@@ -19,7 +19,7 @@ async function connect(path: string) {
       repl: false,
       port: path,
     });
-    let led: any;
+    let led: five.Led;
     let beamBreak: any;
 
     board.on("ready", () => {
