@@ -1,5 +1,5 @@
 import { ipcMainHandle, ipcMainOn, isDev } from "./utils/utils.js";
-import { app, BrowserWindow, dialog, protocol } from "electron";
+import { app, BrowserWindow, dialog } from "electron";
 import path from "path";
 import fs from "fs";
 
@@ -98,7 +98,7 @@ ipcMainOn("test-send", (params) => {
   return;
 });
 
-ipcMainHandle("io", async (type, params) => {
+ipcMainHandle("io", async (type) => {
   switch (type) {
     case "get-serial-devices":
       return await managers.ioManager.getSerialDevices();
@@ -118,7 +118,7 @@ ipcMainHandle("recording", async (type, params) => {
         });
 
         return filePath;
-      } catch (error: any) {
+      } catch (error) {
         return console.error(`Failed to select output folder: `, error);
       }
       break;

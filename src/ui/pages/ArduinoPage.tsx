@@ -1,5 +1,8 @@
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { connect, disconnect, prime, unprime } from "../api/arduinoAPI";
+
+import { arduinoLogAtom } from "../atoms/arduinoAtoms";
 
 type Log = {
   data: string;
@@ -12,32 +15,30 @@ type ArduinoState =
   | "disconnected"
   | "connected"
   | "initializing"
+  | "running"
   | "waiting";
 
 export default function ArduinoPage() {
-  const [arduinoLogs, setArduinoLogs] = useState<Log[] | null>(null);
+  const [newLog, setNewLog] = useState<Log | null>();
+  const [arduinoLogs, setArduinoLogs] = useAtom<Log[]>(arduinoLogAtom);
   const [arduinoState, setArduinoState] =
     useState<ArduinoState>("disconnected");
 
-  const handleEventData = (type, data) => {
-    console.log(`Received data: <${type}>`, data);
-    if (type === "update") {
-      setArduinoState(data);
-    } else if (type === "log") {
-      const log = { data, time: new Date().toISOString() };
-      const newLogs = arduinoLogs != null ? [...arduinoLogs, log] : [log];
-      setArduinoLogs(newLogs);
-    }
-  };
-
   useEffect(() => {
     window.electronIPC.onArduinoLog((data: string) => {
-      handleEventData("log", data);
+      setNewLog({ data, time: new Date().toISOString() });
     });
     window.electronIPC.onArduinoUpdate((data: string) => {
-      handleEventData("update", data);
+      setArduinoState(data as ArduinoState);
     });
   }, []);
+
+  useEffect(() => {
+    if (newLog?.data && newLog?.time) {
+      setArduinoLogs([...arduinoLogs, newLog]);
+    }
+    setNewLog(null);
+  }, [newLog]);
 
   return (
     <div className="flex h-full w-full items-center justify-between gap-20 p-3 px-5">
