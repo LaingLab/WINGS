@@ -13,3 +13,7 @@ export function prime() {
 export function unprime() {
   window.electronIPC.arduino("unprime", null);
 }
+
+export function testLights() {
+  window.electronIPC.arduino("test-lights", null);
+}

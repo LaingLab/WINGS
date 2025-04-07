@@ -146,5 +146,9 @@ ipcMainHandle("arduino", async (type, params) => {
       return managers.arduinoManager.unprime();
     case "disconnect":
       return managers.arduinoManager.disconnect();
+    case "test-lights":
+      return managers.arduinoManager.testLights();
+    case "toggle-led":
+      return managers.arduinoManager.toggleLed(params?.pin, params?.state);
   }
 });
