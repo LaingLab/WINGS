@@ -8,5 +8,9 @@
     "skipLibCheck": true,
     "noImplicitAny": false
   },
-  "include": ["./**/*", "../../types.d.ts"]
+  "include": [
+    "./**/*",
+    "../../types.d.ts",
+    "../../_testing/newArduinoManager.ts"
+  ]
 }

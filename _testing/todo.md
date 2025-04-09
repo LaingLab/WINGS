@@ -4,10 +4,9 @@
 
 2. Setup USB arduino controller (Johnny-five)
 
-   - [x] Connects to arduino
-   - [x] Sets up various sensors
-   - [x] triggers events based on sensor input
-   - [x] outputs sensor readings to frontend
+   - [x] Arduino connection & disconnection
+   - [x] Communication and control
+   - [ ] UI Implementation
 
 3. Setup bluetooth controller (Electron Web Bluetooth API)
 
