@@ -25,5 +25,5 @@
     "noImplicitAny": false
   },
   "exclude": ["src/electron"],
-  "include": ["src", "testing", "_testing/newArduinoManager.ts"]
+  "include": ["src"]
 }
