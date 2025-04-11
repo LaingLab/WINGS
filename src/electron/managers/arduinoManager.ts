@@ -6,6 +6,7 @@ import { mainWindow } from "../main.js";
 
 let primed = false;
 let waiting = false;
+
 let board: five.Board;
 
 const pins: Record<string, number> = {
@@ -64,6 +65,27 @@ async function connect(pathName = null) {
   }
 }
 
+async function disconnect(params?: { noLog: boolean }) {
+  await lightsOff().then(() => {
+    primed = false;
+    waiting = false;
+
+    board = null;
+    for (const key in sensors) {
+      sensors[key] = null;
+    }
+
+    for (const key in leds) {
+      leds[key] = null;
+    }
+
+    if (!params?.noLog) {
+      log("Disconnected");
+      update("disconnected");
+    }
+  });
+}
+
 async function initBoard() {
   log("Initializing board...");
   try {
@@ -84,7 +106,6 @@ async function initBoard() {
     console.error(e);
   } finally {
     log("Board initialized");
-
     await eventListeners();
   }
   return 1;
@@ -92,11 +113,12 @@ async function initBoard() {
 
 async function eventListeners() {
   log("Initializing event listeners...");
+  await testLights();
   try {
     let prev;
     sensors.gasSensor.on("data", (value) => {
       if (value != prev) {
-        // console.log(value)
+        updateSensor(`gas,${value}`);
       }
       prev = value;
     });
@@ -118,47 +140,6 @@ async function eventListeners() {
   } finally {
     log("Event listeners initialized");
     toggleLed("on", pins.redLed);
-  }
-  return 1;
-}
-
-async function testLights() {
-  for (const key in leds) {
-    toggleLed("on", pins[key]);
-    await wait(500);
-    toggleLed("off", pins[key]);
-  }
-  await wait(500);
-  return 1;
-}
-
-async function toggleLed(
-  state: string,
-  pin: number | null,
-  inputLed?: five.Led,
-  ms?: number,
-) {
-  log(`Toggling led @ pin ${pin} - ${state}`);
-  let led: five.Led;
-  if (pin) {
-    led = new five.Led(pin);
-  } else {
-    led = inputLed;
-  }
-
-  switch (state) {
-    case "on":
-      led.on();
-      return led;
-    case "off":
-      led.off();
-      return led;
-    case "blink":
-      led.blink(ms);
-      return led;
-    case "stop":
-      led.stop().off();
-      return led;
   }
   return 1;
 }
@@ -214,37 +195,60 @@ async function breakCycle() {
   return 1;
 }
 
-async function disconnect(params?: { noLog: boolean }) {
-  await lightsOff().then(() => {
-    primed = false;
-    waiting = false;
-
-    board = null;
-    for (const key in sensors) {
-      sensors[key] = null;
-    }
-
-    for (const key in leds) {
-      leds[key] = null;
-    }
-
-    if (!params?.noLog) {
-      log("Disconnected");
-      update("disconnected");
-    }
-  });
+async function testLights() {
+  for (const key in leds) {
+    toggleLed("on", pins[key]);
+    await wait(200);
+    toggleLed("off", pins[key]);
+  }
+  await wait(200);
+  return 1;
 }
 
 async function lightsOff() {
   try {
     for (const key in leds) {
       const led = leds[key];
-      led.off();
+      toggleLed("off", led);
     }
   } catch (e) {
     console.error(e);
     return 0;
   }
+}
+
+async function toggleLed(
+  state: string,
+  pin: number | null,
+  inputLed?: five.Led,
+  ms?: number,
+) {
+  // log(`Toggling led @ pin ${pin} - ${state}`);
+  let led: five.Led;
+  if (pin) {
+    led = new five.Led(pin);
+  } else {
+    led = inputLed;
+  }
+
+  updateSensor(
+    `led,${pin ? pin : inputLed?.pin},${state == "stop" ? "off" : state}`,
+  );
+  switch (state) {
+    case "on":
+      led.on();
+      return led;
+    case "off":
+      led.off();
+      return led;
+    case "blink":
+      led.blink(ms);
+      return led;
+    case "stop":
+      led.stop().off();
+      return led;
+  }
+  return 1;
 }
 
 async function prime() {
@@ -281,6 +285,11 @@ const log = (message: string) => {
 const update = (data: string) => {
   console.log(`[Arduino] <UPDATE> ${data}`);
   mainWindow.webContents.send("arduino-update", data);
+};
+
+const updateSensor = (data: string) => {
+  console.log(`[Arduino] <SENSOR> ${data}`);
+  mainWindow.webContents.send("arduino-sensor", data);
 };
 
 export default { connect, disconnect, prime, unprime, testLights, toggleLed };

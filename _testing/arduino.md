@@ -15,15 +15,4 @@
   - Whats the best option
 - Figure out model for state montioring/management
 
-### Steps
-
-1. Backend
-   a. Connection management
-   b. Data transfer & retreval
-   c. Pin infomation & usage
-   d. Error management & cleanup
-2. Frontend
-   a. Establish API calls for backend functions
-   b. Send data and events
-   c. Handle incoming data and events
-   d. Display data in ui
+### TODO

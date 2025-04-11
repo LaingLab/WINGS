@@ -8,6 +8,7 @@ electron.contextBridge.exposeInMainWorld("electronIPC", {
 
   arduino: async (type, params) => ipcInvoke("arduino", type, params),
   onArduinoUpdate: (callback) => ipcOn("arduino-update", callback),
+  onArduinoSensor: (callback) => ipcOn("arduino-sensor", callback),
   onArduinoLog: (callback) => ipcOn("arduino-log", callback),
 
   // Frame Actions

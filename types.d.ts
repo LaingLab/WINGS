@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 interface Window {
   electronIPC: {
     // Custom Methods
@@ -7,6 +9,7 @@ interface Window {
 
     arduino: (type: string, params?: any) => any;
     onArduinoUpdate: (callback: any) => void;
+    onArduinoSensor: (callback: any) => void;
     onArduinoLog: (callback: any) => void;
 
     // Frame Actions
