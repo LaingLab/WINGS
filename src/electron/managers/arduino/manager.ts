@@ -1,8 +1,8 @@
 import five from "johnny-five";
 
 import { wait, log, update, updateSensor } from "./utils.js";
-import { leds } from "./constants.js";
 import { lightsOff, testLights, toggleLed } from "./led.js";
+import { leds } from "./constants.js";
 
 let primed = false;
 let waiting = false;
@@ -26,6 +26,7 @@ async function connect(pathName?) {
 
     board.on("ready", () => {
       log(`Board connected @ ${board?.port}`);
+      update("connected");
       init();
     });
 
