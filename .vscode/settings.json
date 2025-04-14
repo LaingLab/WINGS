@@ -1,0 +1,32 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.organizeImports": "always"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.wordWrap": "on",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    ".vscode": true,
+    "build": true,
+    "node_modules": true,
+    "out": true,
+    ".editorconfig": true,
+    ".npmrc": true,
+    ".prettierignore": true,
+    ".prettierrc.yaml": true,
+    "eslint.config.mjs": true,
+    "pnpm-lock.yaml": true,
+    ".gitignore": true,
+    "electron-builder.yml": true,
+    "tsconfig.json": true,
+    "package.json": true,
+    "electron.vite.config.ts": true
+  },
+  "explorerExclude.backup": {}
+}
