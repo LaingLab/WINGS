@@ -78,11 +78,9 @@ Setup -> Idle -> Started -> Initializing -> Executing -> Saving -> Exiting -> Id
 
 ### Plan
 
-- [ ] Scaffold ui with mock data
-- [ ] Setup database
-- [ ] Attach database to UI
-- [ ] Setup arduino functionality
-- [ ] Setup video functionality
-- [ ] Setup trial functionality
-- [ ] Save data into logs and files
+- [x] Scaffold ui with mock data
+- [x] Setup jotai for state management
+- [ ] Setup IPC communcation to and from backend
+- [ ] Setup backend logic to run trials
+- [ ] Save trial data into logs and files
 - [ ] Access trial data and logs in result view

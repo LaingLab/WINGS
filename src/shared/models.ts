@@ -1,21 +1,23 @@
 export type TrialInfo = {
-  name: string
+  name?: string
   status: string
-  duration: number
+  duration?: string
   videoInfo: VideoInfo
   arduinoInfo: ArduinoInfo
-  settings: TrialSettings
+  settings?: TrialSettings
   data?: TrialData
 }
 
 export type ArduinoInfo = {
   path: string
+  status: string
   pins: Record<string, string>[]
   connectionInfo?: {}
   params?: {}
 }
 
 export type VideoInfo = {
+  label: string
   path: string
   fileName: string
   outputFolder: string
