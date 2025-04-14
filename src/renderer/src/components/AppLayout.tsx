@@ -22,7 +22,7 @@ export const Sidebar = ({ className, children, ...props }: ComponentProps<'aside
 
 export const Content = ({ className, children, ...props }: ComponentProps<'div'>) => {
   return (
-    <div className={twMerge('h-screen flex-1 overflow-auto', className)} {...props}>
+    <div className={twMerge('h-screen max-h-screen flex-1', className)} {...props}>
       {children}
     </div>
   )

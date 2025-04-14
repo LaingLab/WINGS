@@ -1,29 +1,37 @@
-import { trialInfoAtom } from '@/store'
+import { arduinoInfoAtom } from '@/store'
 import { useAtomValue } from 'jotai'
+import { twMerge } from 'tailwind-merge'
 
 export const ArduinoInfoArea = () => {
-  const trialInfo = useAtomValue(trialInfoAtom)
+  const arduinoInfo = useAtomValue(arduinoInfoAtom)
 
   return (
-    <div className="flex h-28 gap-2 p-3">
-      <div className="w-1/3">
-        <p className="mb-2 font-semibold">Arduino</p>
-        <p>
-          <span className="mb-1 text-white/30">Path:</span> {trialInfo.arduinoInfo.path || 'n/a'}
+    <div className="flex h-30 justify-between gap-2 p-3">
+      <div>
+        <p className="font-semibold">Arduino</p>
+
+        <p className="text-sm">
+          <span className="text-white/30">Status:</span> {arduinoInfo.status}
         </p>
-        <p>
-          <span className="text-white/30">Status:</span> {trialInfo.arduinoInfo.status}
+        <p className="text-sm">
+          <span className="text-white/30">Primed:</span>{' '}
+          {arduinoInfo.primed ? 'primed' : 'unprimed'}
+        </p>
+        <p className="text-sm">
+          <span className="mb-1 text-white/30">Path:</span> {arduinoInfo.path || 'n/a'}
         </p>
       </div>
-      <div className="w-2/3">
-        <p>Pins</p>
-        <div className="flex gap-2">
-          {trialInfo.arduinoInfo.pins.map((pin) => (
+      <div>
+        <p className="font-semibold">Pins</p>
+        <div className="flex gap-1">
+          {arduinoInfo.pins.map((pin) => (
             <div
               key={pin.pin}
               className="rounded-xl border border-white/10 bg-neutral-900/50 p-2 text-center"
             >
-              <p className="text-xl text-white/60">{pin.start}</p>
+              <p className={twMerge('text-xl text-white/30', pin.value != 'off' && 'text-white')}>
+                {pin.value}
+              </p>
               <div className="mt-1 flex gap-1 text-sm">
                 <p>{pin.type}</p>
                 <p>{pin.pin}</p>

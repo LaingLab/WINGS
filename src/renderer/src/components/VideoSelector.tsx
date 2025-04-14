@@ -38,9 +38,7 @@ export const VideoSelector = () => {
       value={selectedDevice || ''}
       disabled={isRecording}
     >
-      <option value="" disabled>
-        Select a camera
-      </option>
+      <option value="">Select a camera</option>
       {devices.map((device) => (
         <option key={device.deviceId} value={device.deviceId}>
           {device.label || `Camera ${device.deviceId}`}

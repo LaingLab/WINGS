@@ -1,21 +1,45 @@
-import { trialInfoAtom } from '@/store'
+import { tempTrialInfoAtom, trialInfoAtom } from '@/store'
+import { defaultTrialInfo } from '@shared/constants'
 import { useAtom } from 'jotai'
+import { twMerge } from 'tailwind-merge'
 import { VideoSelector } from './VideoSelector'
 
 export const TrialInputs = () => {
   const [trialInfo, setTrialInfo] = useAtom(trialInfoAtom)
+  const [tempTrialInfo, setTempTrialInfo] = useAtom(tempTrialInfoAtom)
 
   const onSubmit = () => {
-    console.log('Saved Trial')
+    setTrialInfo(tempTrialInfo)
   }
+
+  const onReset = () => {
+    setTempTrialInfo(defaultTrialInfo)
+  }
+
+  const canSave = trialInfo != tempTrialInfo
+
+  const canReset = tempTrialInfo != defaultTrialInfo
 
   return (
     <div className="trialInputs flex-grow">
       <form action={onSubmit} className="flex flex-col gap-4">
         {/* Actions */}
         <div className="flex gap-1">
-          <button type="submit">Save</button>
-          <button type="button">Reset</button>
+          <button
+            type="submit"
+            disabled={!canSave}
+            className={twMerge('opacity-50', canSave && 'opacity-100')}
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={onReset}
+            disabled={!canReset}
+            className={twMerge('opacity-50', canReset && 'opacity-100')}
+          >
+            Reset
+          </button>
         </div>
 
         {/* Trial Info */}
@@ -23,9 +47,9 @@ export const TrialInputs = () => {
           <input
             type="text"
             placeholder="Trial Name"
-            value={trialInfo.name}
+            value={tempTrialInfo.name}
             onChange={(e) =>
-              setTrialInfo((prev) => {
+              setTempTrialInfo((prev) => {
                 return {
                   ...prev,
                   name: e.target.value
@@ -36,9 +60,9 @@ export const TrialInputs = () => {
           <input
             type="number"
             placeholder="Duration  ( 0: inf )"
-            value={trialInfo.duration}
+            value={tempTrialInfo.duration}
             onChange={(e) =>
-              setTrialInfo((prev) => {
+              setTempTrialInfo((prev) => {
                 return {
                   ...prev,
                   duration: e.target.value
@@ -53,9 +77,9 @@ export const TrialInputs = () => {
           <input
             type="text"
             placeholder="Arduino Path"
-            value={trialInfo.arduinoInfo.path}
+            value={tempTrialInfo.arduinoInfo.path}
             onChange={(e) =>
-              setTrialInfo((prev) => {
+              setTempTrialInfo((prev) => {
                 return {
                   ...prev,
                   arduinoInfo: {
@@ -67,8 +91,12 @@ export const TrialInputs = () => {
             }
           />
           <div className="flex gap-1">
-            <button type="button">Prime</button>
-            <button type="button">Unprime</button>
+            <button type="button" onClick={() => window.context.arduinoConnect()}>
+              Connect
+            </button>
+            <button type="button" onClick={() => window.context.primeArduino()}>
+              Prime
+            </button>
           </div>
         </div>
 
@@ -78,9 +106,9 @@ export const TrialInputs = () => {
           <input
             type="text"
             placeholder="File name"
-            value={trialInfo.videoInfo.fileName}
+            value={tempTrialInfo.videoInfo.fileName}
             onChange={(e) =>
-              setTrialInfo((prev) => {
+              setTempTrialInfo((prev) => {
                 return {
                   ...prev,
                   videoInfo: {
@@ -91,7 +119,7 @@ export const TrialInputs = () => {
               })
             }
           />
-          <button type="button">Choose Output Folder</button>
+          {/* <button type="button">Choose Output Folder</button> */}
         </div>
       </form>
     </div>

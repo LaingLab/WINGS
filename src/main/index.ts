@@ -2,12 +2,16 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 
+import { connect, prime, startTrial } from '@/lib'
+
 import icon from '../../resources/icon.png?asset'
 
+export let mainWindow
+
 function createWindow(): void {
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
     show: false,
     center: true,
     autoHideMenuBar: true,
@@ -42,8 +46,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+  ipcEvents()
 
   createWindow()
 
@@ -58,3 +61,12 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+const ipcEvents = () => {
+  // IPC test
+  ipcMain.on('ping', () => console.log('pong'))
+
+  ipcMain.handle('arduino-connect', () => connect())
+  ipcMain.handle('run-trial', (_, trialInfo) => startTrial(trialInfo))
+  ipcMain.handle('prime-aruino', () => prime())
+}

@@ -11,9 +11,14 @@ export type TrialInfo = {
 export type ArduinoInfo = {
   path: string
   status: string
-  pins: Record<string, string>[]
-  connectionInfo?: {}
-  params?: {}
+  primed: boolean
+  pins: ArduinoPin[]
+}
+
+export type ArduinoPin = {
+  pin: string
+  type: string
+  value: string
 }
 
 export type VideoInfo = {
@@ -21,20 +26,25 @@ export type VideoInfo = {
   path: string
   fileName: string
   outputFolder: string
-  params?: {}
 }
 
 export type TrialData = {
   events: TrialEvent[]
-  sensorData: string
-  logs: string
+  sensorData?: string
+  logs?: TrialLog[]
 }
 
 export type TrialEvent = {
   name: string
   type: string
   time: string
-  params?: {}
 }
 
-export type TrialSettings = {}
+export type TrialLog = {
+  data: string
+  time: string
+}
+
+export type TrialSettings = {
+  idk?: string
+}

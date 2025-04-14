@@ -76,11 +76,25 @@ Setup -> Idle -> Started -> Initializing -> Executing -> Saving -> Exiting -> Id
   - Sensor Readings
 - Settings
 
+### Trial Runtime
+
+1. Start trial called
+2. Initialize devices
+3. Start recording
+4. Event loop
+5. Save data and logs
+
 ### Plan
 
 - [x] Scaffold ui with mock data
 - [x] Setup jotai for state management
+- [x] Event listeners (jotai)
 - [ ] Setup IPC communcation to and from backend
 - [ ] Setup backend logic to run trials
 - [ ] Save trial data into logs and files
 - [ ] Access trial data and logs in result view
+
+### TODO
+
+- [ ] Backend trial runtime
+- [ ] File saving

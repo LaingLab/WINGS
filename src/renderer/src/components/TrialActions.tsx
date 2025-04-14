@@ -6,6 +6,7 @@ export const TrialActions = () => {
 
   const handleRun = () => {
     console.log('Running Trial...', trialInfo)
+    window.context.runTrial(trialInfo)
   }
   return (
     <div className="trialInputs flex gap-1">

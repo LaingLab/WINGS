@@ -19,11 +19,11 @@ export const VideoInfoArea = () => {
         </div>
         <div>
           <p className="text-white/30">Filename</p>
-          <p>{trialInfo.videoInfo.fileName || 'n/a'}</p>
+          <p className="line-clamp-2 break-words">{trialInfo.videoInfo.fileName || 'n/a'}</p>
         </div>
         <div>
           <p className="text-white/30">Output Folder</p>
-          <p>{trialInfo.videoInfo.outputFolder || 'n/a'}</p>
+          <p className="line-clamp-2 break-words">{trialInfo.videoInfo.outputFolder || 'n/a'}</p>
         </div>
       </div>
       <div className="flex aspect-video h-fit w-3/4 items-center justify-center rounded-xl border border-white/10 bg-neutral-900/50">
