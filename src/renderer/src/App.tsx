@@ -1,3 +1,28 @@
+import {
+  ArduinoInfoArea,
+  Content,
+  EventInfoArea,
+  RootLayout,
+  Sidebar,
+  TrialActions,
+  TrialInfoArea,
+  TrialInputs,
+  VideoInfoArea
+} from '@/components'
+
 export default function App() {
-  return <div className="flex h-full items-center justify-center text-2xl">V2</div>
+  return (
+    <RootLayout>
+      <Sidebar className="flex flex-col bg-neutral-900 p-2">
+        <TrialInputs />
+        <TrialActions />
+      </Sidebar>
+      <Content className="flex flex-col border-l border-l-white/20">
+        <TrialInfoArea />
+        <VideoInfoArea />
+        <EventInfoArea />
+        <ArduinoInfoArea />
+      </Content>
+    </RootLayout>
+  )
 }

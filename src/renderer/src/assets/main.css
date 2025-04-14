@@ -38,3 +38,13 @@
     @apply bg-transparent;
   }
 }
+
+@layer components {
+  .trialInputs input {
+    @apply w-full rounded-md border border-white/15 p-2 py-1.5;
+  }
+
+  .trialInputs button {
+    @apply w-full rounded-md border border-white/15 bg-neutral-700/50 py-1 duration-150 hover:bg-transparent;
+  }
+}
