@@ -13,9 +13,10 @@ export const mockTrial: TrialInfo = {
   arduinoInfo: {
     path: 'COM11',
     status: 'disconnected',
+    primed: false,
     pins: [
-      { type: 'led', pin: '13', start: 'off' },
-      { type: 'sensor', pin: '12', start: '0' }
+      { type: 'led', pin: '13', value: 'off' },
+      { type: 'sensor', pin: '12', value: '0' }
     ]
   },
   settings: {},
@@ -26,8 +27,6 @@ export const mockTrial: TrialInfo = {
         type: 'beam-break',
         time: new Date().toTimeString()
       }
-    ],
-    sensorData: '',
-    logs: ''
+    ]
   }
 }

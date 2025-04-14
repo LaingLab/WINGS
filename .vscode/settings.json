@@ -26,7 +26,9 @@
     "electron-builder.yml": true,
     "tsconfig.json": true,
     "package.json": true,
-    "electron.vite.config.ts": true
+    "electron.vite.config.ts": true,
+    "tsconfig.node.json": true,
+    "tsconfig.web.json": true
   },
   "explorerExclude.backup": {}
 }

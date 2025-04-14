@@ -89,7 +89,8 @@ Setup -> Idle -> Started -> Initializing -> Executing -> Saving -> Exiting -> Id
 - [x] Scaffold ui with mock data
 - [x] Setup jotai for state management
 - [x] Event listeners (jotai)
-- [ ] Setup IPC communcation to and from backend
+- [x] Setup IPC communcation to and from backend
+- [ ] Setup persistant data
 - [ ] Setup backend logic to run trials
 - [ ] Save trial data into logs and files
 - [ ] Access trial data and logs in result view

@@ -6,8 +6,9 @@ export const ArduinoInfoArea = () => {
   const arduinoInfo = useAtomValue(arduinoInfoAtom)
 
   return (
-    <div className="flex h-30 justify-between gap-2 p-3">
-      <div>
+    <div className="flex justify-between gap-4 p-3">
+      {/* Info */}
+      <div className="text-nowrap">
         <p className="font-semibold">Arduino</p>
 
         <p className="text-sm">
@@ -21,9 +22,11 @@ export const ArduinoInfoArea = () => {
           <span className="mb-1 text-white/30">Path:</span> {arduinoInfo.path || 'n/a'}
         </p>
       </div>
-      <div>
+
+      {/* Pins */}
+      <div className="w-fit">
         <p className="font-semibold">Pins</p>
-        <div className="flex gap-1">
+        <div className="flex flex-wrap gap-1">
           {arduinoInfo.pins.map((pin) => (
             <div
               key={pin.pin}
