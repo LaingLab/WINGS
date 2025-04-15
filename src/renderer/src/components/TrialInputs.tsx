@@ -1,46 +1,16 @@
-import { tempTrialInfoAtom, trialInfoAtom } from '@/store'
-import { defaultTrialInfo } from '@shared/constants'
+import { tempTrialInfoAtom } from '@/store'
 import { useAtom } from 'jotai'
-import { twMerge } from 'tailwind-merge'
+import { TopTrialActions } from './TrialActions'
 import { VideoSelector } from './VideoSelector'
 
 export const TrialInputs = () => {
-  const [trialInfo, setTrialInfo] = useAtom(trialInfoAtom)
   const [tempTrialInfo, setTempTrialInfo] = useAtom(tempTrialInfoAtom)
-
-  const onSubmit = () => {
-    setTrialInfo(tempTrialInfo)
-  }
-
-  const onReset = () => {
-    setTempTrialInfo(defaultTrialInfo)
-  }
-
-  const canSave = trialInfo != tempTrialInfo
-
-  const canReset = tempTrialInfo != defaultTrialInfo
 
   return (
     <div className="trialInputs flex-grow">
-      <form action={onSubmit} className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         {/* Actions */}
-        <div className="flex gap-1">
-          <button
-            type="submit"
-            disabled={!canSave}
-            className={twMerge('opacity-50', canSave && 'opacity-100')}
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={onReset}
-            disabled={!canReset}
-            className={twMerge('opacity-50', canReset && 'opacity-100')}
-          >
-            Reset
-          </button>
-        </div>
+        <TopTrialActions />
 
         {/* Trial Info */}
         <div className="space-y-1">
@@ -57,7 +27,7 @@ export const TrialInputs = () => {
               })
             }
           />
-          <input
+          {/* <input
             type="number"
             placeholder="Duration  ( 0: inf )"
             value={tempTrialInfo.duration}
@@ -69,7 +39,29 @@ export const TrialInputs = () => {
                 }
               })
             }
+          /> */}
+        </div>
+
+        {/* Video Info */}
+        <div className="space-y-1">
+          <input
+            type="text"
+            placeholder="File name"
+            value={tempTrialInfo.videoInfo.fileName}
+            onChange={(e) =>
+              setTempTrialInfo((prev) => {
+                return {
+                  ...prev,
+                  videoInfo: {
+                    ...prev.videoInfo,
+                    fileName: e.target.value
+                  }
+                }
+              })
+            }
           />
+          <VideoSelector />
+          {/* <button type="button">Choose Output Folder</button> */}
         </div>
 
         {/* Arduino Info */}
@@ -99,29 +91,7 @@ export const TrialInputs = () => {
             </button>
           </div>
         </div>
-
-        {/* Video Info */}
-        <div className="space-y-1">
-          <VideoSelector />
-          <input
-            type="text"
-            placeholder="File name"
-            value={tempTrialInfo.videoInfo.fileName}
-            onChange={(e) =>
-              setTempTrialInfo((prev) => {
-                return {
-                  ...prev,
-                  videoInfo: {
-                    ...prev.videoInfo,
-                    fileName: e.target.value
-                  }
-                }
-              })
-            }
-          />
-          {/* <button type="button">Choose Output Folder</button> */}
-        </div>
-      </form>
+      </div>
     </div>
   )
 }

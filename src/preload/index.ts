@@ -6,10 +6,21 @@ if (!process.contextIsolated) {
 
 try {
   contextBridge.exposeInMainWorld('context', {
+    // File
+    fileExists: (filenme) => ipcInvoke('file-exists', filenme),
+    readFile: (params: { filename; filetype }) => ipcInvoke('read-file', params),
+    saveTrialInfo: (trialInfo) => ipcInvoke('save-trial-info', trialInfo),
+    deleteTrialInfo: () => ipcInvoke('delete-trial-info'),
+
+    // Trial
     runTrial: (trialInfo) => ipcInvoke('run-trial', trialInfo),
-    onTrialLog: (callback) => ipcOn('trial-log', callback),
+
+    // Arduino
     arduinoConnect: () => ipcInvoke('arduino-connect'),
     primeArduino: () => ipcInvoke('prime-aruino'),
+
+    // Event Listeners
+    onTrialLog: (callback) => ipcOn('trial-log', callback),
     onArduinoInfo: (callback) => ipcOn('arduino-info', callback),
     onArduinoPinUpdate: (callback) => ipcOn('arduino-pin', callback),
     onArduinoEvent: (callback) => ipcOn('arduino-event', callback)
@@ -23,14 +34,14 @@ const ipcInvoke = (key, ...args) => {
   return ipcRenderer.invoke(key, ...args)
 }
 
-function ipcOn(key, callback) {
+const ipcOn = (key, callback) => {
   console.log(`Adding listener for ${key}`)
   const wrappedCallback = (_event, ...args) => callback(...args)
   ipcRenderer.on(key, wrappedCallback)
   return () => ipcRenderer.off(key, wrappedCallback) && ipcRenderer.removeAllListeners(key)
 }
 
-function ipcSend(key, payload) {
+const ipcSend = (key, payload) => {
   console.log(`Sending ${key} with payload:`, payload)
   ipcRenderer.send(key, payload)
 }

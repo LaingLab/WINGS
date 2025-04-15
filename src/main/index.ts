@@ -2,7 +2,15 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 
-import { connect, prime, startTrial } from '@/lib'
+import {
+  connect,
+  deleteTrialInfo,
+  fileExists,
+  prime,
+  readFile,
+  saveTrialInfo,
+  startTrial
+} from '@/lib'
 
 import icon from '../../resources/icon.png?asset'
 
@@ -63,10 +71,22 @@ app.on('window-all-closed', () => {
 })
 
 const ipcEvents = () => {
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+  // File
+  ipcMain.handle('file-exists', (_, filename) => fileExists(filename))
+  ipcMain.handle(
+    'read-file',
+    (_, params: { filename: string; filetype: 'txt' | 'json' | 'jsonl' | 'csv' }) =>
+      readFile(params.filename, params.filetype)
+  )
+  ipcMain.handle('save-trial-info', (_, trialInfo) => saveTrialInfo(trialInfo))
+  ipcMain.handle('delete-trial-info', () => deleteTrialInfo())
 
-  ipcMain.handle('arduino-connect', () => connect())
+  // Trial
   ipcMain.handle('run-trial', (_, trialInfo) => startTrial(trialInfo))
+
+  // Arduino
+  ipcMain.handle('arduino-connect', () => connect())
   ipcMain.handle('prime-aruino', () => prime())
+
+  // Video
 }

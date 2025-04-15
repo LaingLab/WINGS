@@ -1,5 +1,7 @@
 import { TrialInfo } from './models'
 
+export const SAVE_DIR = '/home/labian/Documents/GLIDE/GLIDE_Test-1/'
+
 export const defaultTrialInfo: TrialInfo = {
   name: '',
   status: 'setup',
@@ -18,8 +20,8 @@ export const defaultTrialInfo: TrialInfo = {
   },
   settings: {},
   data: {
+    logs: [],
     events: [],
-    sensorData: '',
-    logs: ''
+    sensorData: ''
   }
 }

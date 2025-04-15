@@ -1,4 +1,4 @@
-import { isRecordingAtom, outputPathAtom, selectedMediaDeviceAtom } from '@/store'
+import { isRecordingAtom, outputPathAtom, tempTrialInfoAtom } from '@/store'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { CameraOff } from 'lucide-react'
 import { useEffect, useRef } from 'react'
@@ -6,7 +6,7 @@ import RecordRTC from 'recordrtc'
 
 export const VideoPreview = () => {
   const [outputPath, setOutputPath] = useAtom(outputPathAtom)
-  const selectedDevice = useAtomValue(selectedMediaDeviceAtom)
+  const { videoInfo } = useAtomValue(tempTrialInfoAtom)
   const setIsRecording = useSetAtom(isRecordingAtom)
   const videoRef = useRef<HTMLVideoElement>(null)
   const recorderRef = useRef<RecordRTC | null>(null)
@@ -14,7 +14,7 @@ export const VideoPreview = () => {
 
   useEffect(() => {
     const startPreview = async () => {
-      if (!selectedDevice) return
+      if (!videoInfo.path) return
 
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop())
@@ -22,7 +22,7 @@ export const VideoPreview = () => {
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          deviceId: selectedDevice,
+          deviceId: videoInfo.path,
           width: { min: 1280, ideal: 1920, max: 1920 },
           height: { min: 720, ideal: 1080, max: 1080 },
           frameRate: { min: 30, ideal: 60 },
@@ -34,7 +34,7 @@ export const VideoPreview = () => {
       if (videoRef.current) videoRef.current.srcObject = stream
     }
     startPreview()
-  }, [selectedDevice])
+  }, [videoInfo.path])
 
   useEffect(() => {
     return () => {
@@ -53,7 +53,7 @@ export const VideoPreview = () => {
   }
 
   const handleStartRecording = async () => {
-    if (!selectedDevice || !outputPath || !streamRef.current) {
+    if (!videoInfo.path || !outputPath || !streamRef.current) {
       alert('Please select a camera and output path first.')
       return
     }
@@ -118,7 +118,7 @@ export const VideoPreview = () => {
 
   return (
     <>
-      {selectedDevice ? (
+      {videoInfo.path ? (
         <video ref={videoRef} className="w-[960px] rounded-xl" autoPlay playsInline />
       ) : (
         <CameraOff size={80} className="text-neutral-800" />

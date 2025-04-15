@@ -4,17 +4,30 @@ import { createObjectCsvWriter } from 'csv-writer'
 import fs from 'fs'
 import path from 'path'
 
-export function saveUserData(data: object): void {
-  const dir = path.join(__dirname, 'saved')
+import { SAVE_DIR } from '@shared/constants'
+
+export function saveTrialInfo(data: object): void {
+  const dir = path.join(SAVE_DIR ?? __dirname, 'saved')
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 
-  const filePath = path.join(dir, 'userData.json')
+  const filePath = path.join(dir, 'trialInfo.json')
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
-  console.log(`✅ Saved userData to ${filePath}`)
+  console.log(`Saved userData to ${filePath}`)
+}
+
+export function deleteTrialInfo() {
+  const filePath = path.join(SAVE_DIR ?? __dirname, 'saved', 'trialInfo.json')
+
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath)
+    console.log('File deleted successfully')
+  } else {
+    console.log('File does not exist')
+  }
 }
 
 export function saveTxtLog(message: string) {
-  const logDir = path.join(__dirname, 'saved')
+  const logDir = path.join(SAVE_DIR ?? __dirname, 'saved')
   if (!fs.existsSync(logDir)) fs.mkdirSync(logDir)
 
   const logPath = path.join(logDir, 'logs.txt')
@@ -25,7 +38,7 @@ export function saveTxtLog(message: string) {
 }
 
 export function saveSensorReading(sensorData: ArduinoPin) {
-  const dir = path.join(__dirname, 'saved')
+  const dir = path.join(SAVE_DIR ?? __dirname, 'saved')
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 
   const filePath = path.join(dir, 'sensor_readings.jsonl')
@@ -39,7 +52,7 @@ export function saveSensorReading(sensorData: ArduinoPin) {
 }
 
 export function saveEvent(eventData: TrialEvent) {
-  const dir = path.join(__dirname, 'saved')
+  const dir = path.join(SAVE_DIR ?? __dirname, 'saved')
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 
   const filePath = path.join(dir, 'events.jsonl')
@@ -53,8 +66,8 @@ export function saveEvent(eventData: TrialEvent) {
 }
 
 export async function convertToCSV(filename: string, filetype: 'json' | 'jsonl') {
-  const inputPath = path.join(__dirname, 'saved', `${filename}.${filetype}`)
-  const outputPath = path.join(__dirname, 'saved', `${filename}.csv`)
+  const inputPath = path.join(SAVE_DIR ?? __dirname, 'saved', `${filename}.${filetype}`)
+  const outputPath = path.join(SAVE_DIR ?? __dirname, 'saved', `${filename}.csv`)
 
   if (!fs.existsSync(inputPath)) {
     console.error(`❌ File not found: ${inputPath}`)
@@ -97,7 +110,7 @@ export async function convertToCSV(filename: string, filetype: 'json' | 'jsonl')
 }
 
 export function readFile(filename: string, filetype: 'txt' | 'json' | 'jsonl' | 'csv') {
-  const filePath = path.join(__dirname, 'saved', `${filename}.${filetype}`)
+  const filePath = path.join(SAVE_DIR ?? __dirname, 'saved', `${filename}.${filetype}`)
 
   if (!fs.existsSync(filePath)) {
     console.error(`File not found: ${filePath}`)
@@ -147,5 +160,24 @@ export function readFile(filename: string, filetype: 'txt' | 'json' | 'jsonl' | 
   }
 }
 
+export function fileExists(filename) {
+  const dirPath = path.join(SAVE_DIR ?? __dirname, 'saved')
+
+  if (!fs.existsSync(dirPath)) {
+    console.log('Directory does not exist')
+    return false
+  }
+
+  const filePath = path.join(dirPath, filename)
+
+  if (fs.existsSync(filePath)) {
+    return true
+  }
+
+  return false
+}
+
 // const logsText = readFile('logs', 'txt')
 // console.log(logsText)
+
+// const exists = fileExists('myFile.txt');

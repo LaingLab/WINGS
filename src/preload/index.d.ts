@@ -1,19 +1,36 @@
 import {
   ArduinoConnect,
+  DeleteTrialInfo,
+  FileExists,
   OnArduinoEvent,
   OnArduinoInfo,
   OnArduinoPinUpdate,
   OnTrialLog,
   PrimeArduino,
-  RunTrial
+  ReadFile,
+  RunTrial,
+  SaveTrialInfo
 } from '@shared/types'
 
 declare global {
   interface Window {
     context: {
-      arduinoConnect: ArduinoConnect
+      // File
+      fileExists: FileExists
+      readFile: ReadFile
+      saveTrialInfo: SaveTrialInfo
+      deleteTrialInfo: DeleteTrialInfo
+
+      // Trial
       runTrial: RunTrial
+
+      // Arduino
+      arduinoConnect: ArduinoConnect
       primeArduino: PrimeArduino
+
+      // Video
+
+      // Event Listeners
       onTrialLog: OnTrialLog
       onArduinoInfo: OnArduinoInfo
       onArduinoPinUpdate: OnArduinoPinUpdate

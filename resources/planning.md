@@ -89,14 +89,15 @@ Setup -> Idle -> Started -> Initializing -> Executing -> Saving -> Exiting -> Id
 - [x] Scaffold ui with mock data
 - [x] Setup jotai for state management
 - [x] Event listeners (jotai)
-- [x] Setup IPC communcation to and from backend
-- [ ] Setup persistant data
+- [x] IPC communcation to and from backend
+- [x] Save trial data into logs and files
+- [x] Persistant user data
+- [x] Data loading on app start
 - [ ] Setup backend logic to run trials
-- [ ] Save trial data into logs and files
 - [ ] Access trial data and logs in result view
 
 ### TODO
 
-- [ ] Backend trial runtime
 - [x] File saving
 - [ ] Arduino Pin Editor (key value store)
+- [ ] Backend trial runtime
