@@ -1,12 +1,12 @@
 {
-  "name": "Testing",
+  "name": "Test Trial",
   "status": "setup",
   "duration": "",
   "videoInfo": {
     "label": "onn. USB 2.0 webcam (3938:1299)",
     "path": "170bc02ccd497447a13ed868c49654281c61770f2e2f10430dcee5ba1464807c",
     "fileName": "Testing.mp4",
-    "outputFolder": "/home/labian/Documents/GLIDE/GLIDE_Test-1/output"
+    "outputFolder": "/home/labian/Documents/GLIDE/GLIDE_Test-1/"
   },
   "arduinoInfo": {
     "path": "/dev/ttyACM0",

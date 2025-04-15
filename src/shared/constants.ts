@@ -10,7 +10,7 @@ export const defaultTrialInfo: TrialInfo = {
     label: '',
     path: '',
     fileName: '',
-    outputFolder: '/home/labian/Documents/GLIDE/GLIDE_Test-1/output'
+    outputFolder: SAVE_DIR
   },
   arduinoInfo: {
     path: '',

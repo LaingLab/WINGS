@@ -93,11 +93,7 @@ Setup -> Idle -> Started -> Initializing -> Executing -> Saving -> Exiting -> Id
 - [x] Save trial data into logs and files
 - [x] Persistant user data
 - [x] Data loading on app start
-- [ ] Setup backend logic to run trials
-- [ ] Access trial data and logs in result view
-
-### TODO
-
-- [x] File saving
-- [ ] Arduino Pin Editor (key value store)
 - [ ] Backend trial runtime
+- [ ] Arduino Pin Editor (key value store)
+- [ ] Improve logging
+- [ ] Results View
