@@ -70,7 +70,7 @@ export async function convertToCSV(filename: string, filetype: 'json' | 'jsonl')
   const outputPath = path.join(SAVE_DIR ?? __dirname, 'saved', `${filename}.csv`)
 
   if (!fs.existsSync(inputPath)) {
-    console.error(`❌ File not found: ${inputPath}`)
+    console.error(`File not found: ${inputPath}`)
     return
   }
 
@@ -90,7 +90,7 @@ export async function convertToCSV(filename: string, filetype: 'json' | 'jsonl')
     }
 
     if (records.length === 0) {
-      console.warn('⚠️ No records to convert.')
+      console.warn('No records to convert.')
       return
     }
 
@@ -103,9 +103,9 @@ export async function convertToCSV(filename: string, filetype: 'json' | 'jsonl')
     })
 
     await csvWriter.writeRecords(records)
-    console.log(`✅ Converted ${filename}.${filetype} to CSV → ${outputPath}`)
+    console.log(`Converted ${filename}.${filetype} to CSV → ${outputPath}`)
   } catch (err) {
-    console.error('❌ Failed to convert to CSV:', err)
+    console.error('Failed to convert to CSV:', err)
   }
 }
 

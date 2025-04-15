@@ -1,6 +1,7 @@
 import {
   ArduinoConnect,
   DeleteTrialInfo,
+  EndTrial,
   FileExists,
   OnArduinoEvent,
   OnArduinoInfo,
@@ -23,6 +24,7 @@ declare global {
 
       // Trial
       runTrial: RunTrial
+      endTrial: EndTrial
 
       // Arduino
       arduinoConnect: ArduinoConnect

@@ -11,6 +11,7 @@ export type DeleteTrialInfo = () => void
 
 // Trial
 export type RunTrial = (trialInfo: TrialInfo) => void
+export type EndTrial = () => void
 
 // Arduino
 export type ArduinoConnect = () => void

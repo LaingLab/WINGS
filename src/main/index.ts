@@ -5,11 +5,12 @@ import { join } from 'path'
 import {
   connect,
   deleteTrialInfo,
+  endTrial,
   fileExists,
   prime,
   readFile,
-  saveTrialInfo,
-  startTrial
+  runTrial,
+  saveTrialInfo
 } from '@/lib'
 
 import icon from '../../resources/icon.png?asset'
@@ -82,7 +83,8 @@ const ipcEvents = () => {
   ipcMain.handle('delete-trial-info', () => deleteTrialInfo())
 
   // Trial
-  ipcMain.handle('run-trial', (_, trialInfo) => startTrial(trialInfo))
+  ipcMain.handle('run-trial', (_, trialInfo) => runTrial(trialInfo))
+  ipcMain.handle('end-trial', () => endTrial())
 
   // Arduino
   ipcMain.handle('arduino-connect', () => connect())

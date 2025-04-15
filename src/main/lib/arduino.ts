@@ -4,6 +4,7 @@
 import five from 'johnny-five'
 import { mainWindow } from '..'
 import { saveEvent, saveSensorReading, saveTxtLog } from './file'
+import { wait } from './utils'
 
 let primed = false
 let waiting = false
@@ -38,24 +39,24 @@ const leds: Record<string, five.Led | null> = {
 }
 
 export async function connect(pathName = null) {
-  log(`Connect function called`)
+  sendLog(`Connect function called`)
 
   try {
     if (board) {
-      log('Removing all connected devices...')
+      sendLog('Removing all connected devices...')
       disconnect({ noLog: true })
     }
 
-    log('Connecting to board...')
+    sendLog('Connecting to board...')
     board = await new five.Board({
       repl: false,
       port: pathName
     })
 
     board.on('ready', () => {
-      log(`Board ready`)
+      sendLog(`Board ready`)
       initBoard().then(() => updateInfo({ status: 'connected', path: board.port }))
-      log(`Board connected @ ${board.port}`)
+      sendLog(`Board connected @ ${board.port}`)
     })
 
     board.on('exit', () => {
@@ -83,14 +84,14 @@ async function disconnect(params?: { noLog: boolean }) {
     // await convertToCSV('sensor_readings', 'jsonl')
 
     if (!params?.noLog) {
-      log('Disconnected')
+      sendLog('Disconnected')
       updateInfo({ status: 'disconnected' })
     }
   })
 }
 
 async function initBoard() {
-  log('Initializing board...')
+  sendLog('Initializing board...')
   try {
     sensors.beamBreak = new five.Switch(3)
     sensors.gasSensor = new five.Sensor({
@@ -108,14 +109,14 @@ async function initBoard() {
   } catch (e) {
     console.error(e)
   } finally {
-    log('Board initialized')
+    sendLog('Board initialized')
     await eventListeners()
   }
   return 1
 }
 
 async function eventListeners() {
-  log('Initializing event listeners...')
+  sendLog('Initializing event listeners...')
   await testLights()
   try {
     let prev
@@ -133,7 +134,7 @@ async function eventListeners() {
 
     sensors.beamBreak.on('close', () => {
       if (!waiting && primed) {
-        log('Broken')
+        sendLog('Broken')
         sendEvent({
           name: 'Beam Broken',
           type: 'beam-break',
@@ -141,7 +142,7 @@ async function eventListeners() {
         })
         breakCycle()
       } else if (!waiting && !primed) {
-        log('Unprimed... cannot break cycle.')
+        sendLog('Unprimed... cannot break cycle.')
         waiting = true
         wait(1000).then(() => {
           waiting = false
@@ -151,7 +152,7 @@ async function eventListeners() {
   } catch (e) {
     console.error(e)
   } finally {
-    log('Event listeners initialized')
+    sendLog('Event listeners initialized')
     toggleLed('on', pins.redLed)
   }
   return 1
@@ -165,37 +166,37 @@ async function breakCycle() {
 
   await wait(1000)
 
-  log('Atomizer On...')
+  sendLog('Atomizer On...')
   toggleLed('on', pins.atomizer)
 
   await wait(4000)
 
-  log('Atomizer Off.')
+  sendLog('Atomizer Off.')
   toggleLed('off', pins.atomizer)
 
-  log('Pumping vapor into chamber...')
+  sendLog('Pumping vapor into chamber...')
   toggleLed('on', pins.inflowPump)
 
   await wait(3000)
 
-  log('Letting vapor dissipate...')
+  sendLog('Letting vapor dissipate...')
   const inflowPumpBlink = await toggleLed('blink', pins.inflowPump, 250)
 
   await wait(6000)
 
   await toggleLed('stop', null, inflowPumpBlink)
 
-  log('Pumping out excess vapor...')
+  sendLog('Pumping out excess vapor...')
   toggleLed('on', pins.outflowPump)
 
   await wait(5000)
 
-  log('Vapor levels sufficently low. Stopping in 3...')
+  sendLog('Vapor levels sufficently low. Stopping in 3...')
   const outflowPumpBlink = await toggleLed('blink', pins.outflowPump, 250)
 
   await wait(4000)
 
-  log('Pump stopped.')
+  sendLog('Pump stopped.')
   await toggleLed('stop', null, outflowPumpBlink)
 
   await wait(2000)
@@ -203,7 +204,7 @@ async function breakCycle() {
   await toggleLed('stop', null, yellowLedBlink)
   waiting = false
 
-  log('Finished Cycle!')
+  sendLog('Finished Cycle!')
   prime()
   return 1
 }
@@ -265,7 +266,7 @@ async function toggleLed(state: string, pin: number | null, inputLed?: five.Led,
 
 export async function prime() {
   if (!primed) {
-    log('Priming...')
+    sendLog('Priming...')
     await wait(1000)
     primed = true
     updateInfo({ primed: true })
@@ -278,7 +279,7 @@ export async function prime() {
 }
 
 async function unprime() {
-  log('Unpriming...')
+  sendLog('Unpriming...')
   await wait(1000)
   primed = false
   toggleLed('off', pins.greenLed)
@@ -287,16 +288,10 @@ async function unprime() {
   return 'unprimed'
 }
 
-const wait = async (ms) => {
-  waiting = true
-  await new Promise((resolve) => setTimeout(resolve, ms))
-  waiting = false
-}
-
-const log = (message: string) => {
+const sendLog = (message: string) => {
   console.log(`[Arduino] <LOG> ${message}`)
   mainWindow.webContents.send('trial-log', `${message}`)
-  saveTxtLog(message)
+  saveTxtLog(`[Arduino] ${message}`)
 }
 
 const updateInfo = (data) => {

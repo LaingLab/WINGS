@@ -14,6 +14,7 @@ try {
 
     // Trial
     runTrial: (trialInfo) => ipcInvoke('run-trial', trialInfo),
+    endTrial: () => ipcInvoke('end-trial'),
 
     // Arduino
     arduinoConnect: () => ipcInvoke('arduino-connect'),

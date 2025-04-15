@@ -3,22 +3,6 @@ import { defaultTrialInfo } from '@shared/constants'
 import { useAtom, useAtomValue } from 'jotai'
 import { twMerge } from 'tailwind-merge'
 
-export const BottomTrialActions = () => {
-  const trialInfo = useAtomValue(trialInfoAtom)
-
-  const handleRun = () => {
-    console.log('Running Trial...', trialInfo)
-    window.context.runTrial(trialInfo)
-  }
-
-  return (
-    <div className="trialInputs flex gap-1">
-      <button onClick={handleRun}>Run</button>
-      <button>Files</button>
-    </div>
-  )
-}
-
 export const TopTrialActions = () => {
   const [trialInfo, setTrialInfo] = useAtom(trialInfoAtom)
   const [tempTrialInfo, setTempTrialInfo] = useAtom(tempTrialInfoAtom)
@@ -61,6 +45,27 @@ export const TopTrialActions = () => {
       >
         Reset
       </button>
+    </div>
+  )
+}
+
+export const BottomTrialActions = () => {
+  const trialInfo = useAtomValue(trialInfoAtom)
+
+  const handleRun = () => {
+    console.log('Running Trial...', trialInfo)
+    window.context.runTrial(trialInfo)
+  }
+
+  const handleEnd = () => {
+    console.log('Ending Trial...')
+    window.context.endTrial()
+  }
+
+  return (
+    <div className="trialInputs flex gap-1">
+      <button onClick={handleRun}>Run</button>
+      <button onClick={handleEnd}>End</button>
     </div>
   )
 }

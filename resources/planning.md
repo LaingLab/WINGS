@@ -1,5 +1,21 @@
 # Use to plan
 
+## Plan
+
+- [x] Scaffold ui with mock data
+- [x] Setup jotai for state management
+- [x] Event listeners (jotai)
+- [x] IPC communcation to and from backend
+- [x] Save trial data into logs and files
+- [x] Persistant user data
+- [x] Data loading on app start
+- [ ] Backend trial runtime -- Started
+- [ ] Arduino Pin Editor (key value store)
+- [ ] Improve logging
+- [ ] Results View
+
+## Other Stuff
+
 ### Yap Area
 
 So basically I need to make an app that can run a trial.
@@ -83,17 +99,3 @@ Setup -> Idle -> Started -> Initializing -> Executing -> Saving -> Exiting -> Id
 3. Start recording
 4. Event loop
 5. Save data and logs
-
-### Plan
-
-- [x] Scaffold ui with mock data
-- [x] Setup jotai for state management
-- [x] Event listeners (jotai)
-- [x] IPC communcation to and from backend
-- [x] Save trial data into logs and files
-- [x] Persistant user data
-- [x] Data loading on app start
-- [ ] Backend trial runtime
-- [ ] Arduino Pin Editor (key value store)
-- [ ] Improve logging
-- [ ] Results View
