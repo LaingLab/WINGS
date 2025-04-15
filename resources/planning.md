@@ -98,4 +98,5 @@ Setup -> Idle -> Started -> Initializing -> Executing -> Saving -> Exiting -> Id
 ### TODO
 
 - [ ] Backend trial runtime
-- [ ] File saving
+- [x] File saving
+- [ ] Arduino Pin Editor (key value store)

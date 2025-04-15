@@ -3,6 +3,7 @@
 
 import five from 'johnny-five'
 import { mainWindow } from '..'
+import { saveEvent, saveSensorReading, saveTxtLog } from './file'
 
 let primed = false
 let waiting = false
@@ -66,7 +67,7 @@ export async function connect(pathName = null) {
 }
 
 async function disconnect(params?: { noLog: boolean }) {
-  await lightsOff().then(() => {
+  await lightsOff().then(async () => {
     primed = false
     waiting = false
 
@@ -78,6 +79,8 @@ async function disconnect(params?: { noLog: boolean }) {
     for (const key in leds) {
       leds[key] = null
     }
+
+    // await convertToCSV('sensor_readings', 'jsonl')
 
     if (!params?.noLog) {
       log('Disconnected')
@@ -293,6 +296,7 @@ const wait = async (ms) => {
 const log = (message: string) => {
   console.log(`[Arduino] <LOG> ${message}`)
   mainWindow.webContents.send('trial-log', `${message}`)
+  saveTxtLog(message)
 }
 
 const updateInfo = (data) => {
@@ -303,9 +307,11 @@ const updateInfo = (data) => {
 const updatePin = (data: string) => {
   // console.log(`[Arduino] <PIN> ${data}`)
   mainWindow.webContents.send('arduino-pin', data)
+  saveSensorReading(JSON.parse(data))
 }
 
 const sendEvent = (data) => {
   console.log(`[Arduino] <EVENT> ${JSON.stringify(data)}`)
   mainWindow.webContents.send('arduino-event', JSON.stringify(data))
+  saveEvent(data)
 }

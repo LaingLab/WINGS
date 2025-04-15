@@ -15,7 +15,7 @@
     ".vscode": true,
     "build": true,
     "node_modules": true,
-    "out": true,
+    "out": false,
     ".editorconfig": true,
     ".npmrc": true,
     ".prettierignore": true,

@@ -1,4 +1,5 @@
 export * from './arduino'
+export * from './file'
 export * from './trial'
 
 // Backend
