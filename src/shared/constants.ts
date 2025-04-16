@@ -1,6 +1,6 @@
 import { TrialInfo } from './models'
 
-export const SAVE_DIR = '/home/labian/Documents/GLIDE/GLIDE_Test-1/'
+export const SAVE_DIR = null // = '/home/labian/Documents/GLIDE/GLIDE_Test-1/'
 
 export const defaultTrialInfo: TrialInfo = {
   name: '',
@@ -10,7 +10,7 @@ export const defaultTrialInfo: TrialInfo = {
     label: '',
     path: '',
     fileName: '',
-    outputFolder: SAVE_DIR
+    outputFolder: SAVE_DIR ?? ''
   },
   arduinoInfo: {
     path: '',

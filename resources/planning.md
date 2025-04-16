@@ -9,7 +9,10 @@
 - [x] Save trial data into logs and files
 - [x] Persistant user data
 - [x] Data loading on app start
+- [x] OS compatible file system
 - [ ] Backend trial runtime -- Started
+  - UI Updates (Status, Duration)
+  - Edit some values of the trial
 - [ ] Arduino Pin Editor (key value store)
 - [ ] Improve logging
 - [ ] Results View
