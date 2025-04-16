@@ -15,7 +15,7 @@
 - [x] Video file saving + conversion
 - [x] Refactor arduino backend code to be more modular
 - [x] Arduino pin editor (UI - key value store)
-- [ ] Setup pump/atomizer device
+- [x] Setup pump/atomizer device
 - [ ] Improve logging
 - [ ] Results View
 

@@ -9,7 +9,7 @@ type ToggleLed = {
 }
 
 export async function toggleLed({ state, pin, freq, inputLed }: ToggleLed) {
-  sendLog(`Toggling led @ pin ${pin} - ${state}`)
+  sendLog(`Toggling led @ pin ${pin ?? inputLed?.pin} - ${state}`)
 
   if (!pin && !inputLed) {
     sendLog('<ERROR> Recieved no pin')

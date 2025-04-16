@@ -14,22 +14,10 @@
     "primed": false,
     "pins": [
       {
-        "id": "",
-        "pin": "13",
-        "type": "led",
-        "value": "off"
-      },
-      {
-        "id": "",
+        "id": "led-13",
         "pin": "3",
         "type": "switch",
         "value": "open"
-      },
-      {
-        "id": "",
-        "pin": "14",
-        "type": "sensor",
-        "value": "0"
       }
     ]
   },

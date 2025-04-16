@@ -2,7 +2,7 @@ import five from 'johnny-five'
 
 import { ArduinoPin } from '@shared/models'
 import { wait } from '../utils'
-import { breakCycle, sendEvent, sendLog, toggleLed, updateInfo, updatePin } from './'
+import { realCycle, sendEvent, sendLog, toggleLed, updateInfo, updatePin } from './'
 
 let primed = false
 let waiting = false
@@ -98,8 +98,9 @@ async function initPins() {
           })
 
           waiting = true
-          await breakCycle(pins)
+          await realCycle()
           waiting = false
+
           updatePin(null, {
             id: `switch-${pin.pin}`,
             pin: pin.pin,
