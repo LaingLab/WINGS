@@ -21,6 +21,8 @@ export type PrimeArduino = () => void
 
 // Event Listener
 export type OnTrialLog = (callback) => void
+export type OnTrialInfo = (callback) => void
+
 export type OnArduinoInfo = (callback) => void
 export type OnArduinoPinUpdate = (callback) => void
 export type OnArduinoEvent = (callback) => void

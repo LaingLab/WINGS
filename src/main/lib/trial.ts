@@ -8,6 +8,7 @@ Trial Runtime
 */
 
 import { TrialInfo } from '@shared/models'
+import { mainWindow } from '..'
 import { connect } from './arduino'
 import { convertToCSV } from './file'
 import { log as logFn } from './log'
@@ -18,6 +19,13 @@ const logPrefix = 'Trial'
 let running = false
 let duration = 0
 let countInterval
+
+const statusUpdate = (status: string) => {
+  const update = {
+    status
+  }
+  mainWindow.webContents.send('trial-info', JSON.stringify(update))
+}
 
 // Run trial
 export async function runTrial(trialInfo: TrialInfo) {
@@ -31,25 +39,32 @@ export async function runTrial(trialInfo: TrialInfo) {
   // Start Recording
 
   log(`Trial started!`)
+  statusUpdate('started')
 
-  countInterval = setInterval(() => (duration += 1), 1000)
+  countInterval = setInterval(() => {
+    duration += 1
+    mainWindow.webContents.send('trial-info', JSON.stringify({ duration: String(duration) }))
+  }, 1000)
 }
 
 export async function endTrial() {
   log(`Ending trial...`)
 
   clearInterval(countInterval)
+  statusUpdate('saving')
 
   running = false
 
   await wait(1000)
 
   log(`Converting data to csv...`)
+  statusUpdate('cleanup')
   await convertToCSV('sensor_readings', 'jsonl')
 
   await wait(1000)
 
   log(`Trial ended, ran for ${duration} seconds`)
+  statusUpdate('stopped')
 }
 
 const log = (m: string) => {

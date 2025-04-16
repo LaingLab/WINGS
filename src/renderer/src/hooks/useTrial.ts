@@ -24,4 +24,27 @@ export function useTrial() {
     }
     fetchTrialInfo()
   }, [setTrialInfo])
+
+  useEffect(() => {
+    const unsub = window.context.onTrialInfo((data: string) => {
+      try {
+        console.log('Recieved status update: ', data)
+        const parsed = JSON.parse(data)
+
+        setTrialInfo((prev) => {
+          const newInfo = {
+            ...prev,
+            ...parsed
+          }
+
+          console.log('inf', newInfo)
+          return newInfo
+        })
+      } catch (err) {
+        console.error('Invalid Trial Info JSON:', data, err)
+      }
+    })
+
+    return () => unsub
+  }, [setTrialInfo])
 }

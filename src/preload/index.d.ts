@@ -6,6 +6,7 @@ import {
   OnArduinoEvent,
   OnArduinoInfo,
   OnArduinoPinUpdate,
+  OnTrialInfo,
   OnTrialLog,
   PrimeArduino,
   ReadFile,
@@ -34,6 +35,8 @@ declare global {
 
       // Event Listeners
       onTrialLog: OnTrialLog
+      onTrialInfo: OnTrialInfo
+
       onArduinoInfo: OnArduinoInfo
       onArduinoPinUpdate: OnArduinoPinUpdate
       onArduinoEvent: OnArduinoEvent

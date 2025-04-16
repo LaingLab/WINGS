@@ -22,6 +22,8 @@ try {
 
     // Event Listeners
     onTrialLog: (callback) => ipcOn('trial-log', callback),
+    onTrialInfo: (callback) => ipcOn('trial-info', callback),
+
     onArduinoInfo: (callback) => ipcOn('arduino-info', callback),
     onArduinoPinUpdate: (callback) => ipcOn('arduino-pin', callback),
     onArduinoEvent: (callback) => ipcOn('arduino-event', callback)
