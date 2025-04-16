@@ -54,6 +54,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.3
         version: 4.1.4(vite@6.2.6(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2))
+      '@types/johnny-five':
+        specifier: ^2.1.11
+        version: 2.1.11
       '@types/node':
         specifier: ^22.14.1
         version: 22.14.1
@@ -858,6 +861,9 @@ packages:
 
   '@types/http-cache-semantics@4.0.4':
     resolution: {integrity: sha512-1m0bIFVc7eJWyve9S0RnuRgcQqF/Xd5QsUZAZeQFr1Q3/p9JWoQQEqmVy+DPTNpGXwhgIetAoYF8JSc33q29QA==}
+
+  '@types/johnny-five@2.1.11':
+    resolution: {integrity: sha512-QKmHTcM20llD0CqFDjBBFNBGAIE4Ezi6u5ClaMDFudgXx8KVP27mqpN1aJ9i3tW8ZlGk/kzgj1VeJO01x40+7g==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -3990,6 +3996,10 @@ snapshots:
       '@types/node': 22.14.1
 
   '@types/http-cache-semantics@4.0.4': {}
+
+  '@types/johnny-five@2.1.11':
+    dependencies:
+      '@types/node': 22.14.1
 
   '@types/json-schema@7.0.15': {}
 

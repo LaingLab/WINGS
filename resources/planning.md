@@ -10,10 +10,11 @@
 - [x] Persistant user data
 - [x] Data loading on app start
 - [x] OS compatible file system
-- [ ] Backend trial runtime -- Started
-  - UI Updates (Status, Duration)
-  - Edit some values of the trial
-- [ ] Arduino Pin Editor (key value store)
+- [x] Backend trial runtime
+- [x] Implement trial runtime into ui
+- [x] Video file saving + conversion
+- [ ] Refactor arduino backend code to be more modular
+- [ ] Arduino pin editor (UI - key value store)
 - [ ] Improve logging
 - [ ] Results View
 

@@ -38,6 +38,7 @@
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@serialport/bindings": "8.0.8",
     "@tailwindcss/vite": "^4.1.3",
+    "@types/johnny-five": "^2.1.11",
     "@types/node": "^22.14.1",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.2",
