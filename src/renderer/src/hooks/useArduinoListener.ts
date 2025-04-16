@@ -1,29 +1,20 @@
-import { trialInfoAtom } from '@/store'
+import { tempTrialInfoAtom, trialInfoAtom } from '@/store'
 import { ArduinoPin } from '@shared/models'
-import { useAtom } from 'jotai'
+import { useImmerAtom } from 'jotai-immer'
 import { useEffect } from 'react'
 
 export function useArduinoListener() {
-  const [trialInfo, setTrialInfo] = useAtom(trialInfoAtom)
+  const [_, setTrialInfo] = useImmerAtom(trialInfoAtom)
+  const [__, setTempTrialInfo] = useImmerAtom(tempTrialInfoAtom)
 
   useEffect(() => {
     const unsub = window.context.onArduinoPinUpdate((data: string) => {
       try {
         const parsed: ArduinoPin = JSON.parse(data)
 
-        setTrialInfo((prev) => {
-          const updatedPins = [
-            ...prev.arduinoInfo.pins.filter((p) => p.pin !== parsed.pin),
-            parsed
-          ].sort((a, b) => parseInt(a.pin) - parseInt(b.pin))
-
-          return {
-            ...prev,
-            arduinoInfo: {
-              ...prev.arduinoInfo,
-              pins: updatedPins
-            }
-          }
+        setTrialInfo((draft) => {
+          const pins = draft.arduinoInfo.pins
+          draft.arduinoInfo.pins[pins.findIndex((pin) => pin.pin == parsed.pin)] = parsed
         })
       } catch (err) {
         console.error('Invalid Arduino sensor JSON:', data, err)

@@ -16,11 +16,11 @@ export type ArduinoInfo = {
 }
 
 export type ArduinoPin = {
-  id: string
+  id?: string
   pin: string
-  type: 'led' | 'sensor' | 'swtich'
+  type: string | 'led' | 'sensor' | 'swtich'
   value: string
-  options?: Record<string, any>
+  options?: Record<string, number>
 }
 
 export type VideoInfo = {

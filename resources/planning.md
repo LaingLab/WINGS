@@ -13,8 +13,9 @@
 - [x] Backend trial runtime
 - [x] Implement trial runtime into ui
 - [x] Video file saving + conversion
-- [ ] Refactor arduino backend code to be more modular
-- [ ] Arduino pin editor (UI - key value store)
+- [x] Refactor arduino backend code to be more modular
+- [x] Arduino pin editor (UI - key value store)
+- [ ] Setup pump/atomizer device
 - [ ] Improve logging
 - [ ] Results View
 

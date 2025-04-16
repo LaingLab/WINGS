@@ -32,7 +32,7 @@ export async function runTrial(trialInfo: TrialInfo) {
   log(`Starting trial... ${JSON.stringify(trialInfo)}`)
   running = true
 
-  await connect()
+  await connect(trialInfo.arduinoInfo.path, trialInfo.arduinoInfo.pins)
 
   await wait(1000)
 
