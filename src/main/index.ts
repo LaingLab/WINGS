@@ -10,7 +10,8 @@ import {
   prime,
   readFile,
   runTrial,
-  saveTrialInfo
+  saveTrialInfo,
+  setupVideoHandlers
 } from '@/lib'
 
 import icon from '../../resources/icon.png?asset'
@@ -56,6 +57,7 @@ app.whenReady().then(() => {
   })
 
   ipcEvents()
+  setupVideoHandlers()
 
   createWindow()
 

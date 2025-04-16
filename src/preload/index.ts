@@ -20,13 +20,20 @@ try {
     arduinoConnect: () => ipcInvoke('arduino-connect'),
     primeArduino: () => ipcInvoke('prime-aruino'),
 
+    // Video
+    startRecording: (options) => ipcInvoke('video:start-recording', options),
+    writeVideoChunk: (data) => ipcInvoke('video:write-chunk', data),
+    stopRecording: (id) => ipcInvoke('video:stop-recording', id),
+
     // Event Listeners
     onTrialLog: (callback) => ipcOn('trial-log', callback),
     onTrialInfo: (callback) => ipcOn('trial-info', callback),
 
     onArduinoInfo: (callback) => ipcOn('arduino-info', callback),
     onArduinoPinUpdate: (callback) => ipcOn('arduino-pin', callback),
-    onArduinoEvent: (callback) => ipcOn('arduino-event', callback)
+    onArduinoEvent: (callback) => ipcOn('arduino-event', callback),
+
+    onVideoControl: (callback) => ipcOn('video-control', callback)
   })
 } catch (error) {
   console.error(error)

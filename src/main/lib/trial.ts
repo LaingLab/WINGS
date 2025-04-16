@@ -37,6 +37,8 @@ export async function runTrial(trialInfo: TrialInfo) {
   await wait(1000)
 
   // Start Recording
+  log(`Starting video recording...`)
+  mainWindow.webContents.send('video-control', 'start-recording')
 
   log(`Trial started!`)
   statusUpdate('started')
@@ -53,15 +55,19 @@ export async function endTrial() {
   clearInterval(countInterval)
   statusUpdate('saving')
 
+  // Stop recording
+  log(`Stopping video recording...`)
+  mainWindow.webContents.send('video-control', 'stop-recording')
+
   running = false
 
-  await wait(1000)
+  await wait(2000)
 
   log(`Converting data to csv...`)
   statusUpdate('cleanup')
   await convertToCSV('sensor_readings', 'jsonl')
 
-  await wait(1000)
+  await wait(3000)
 
   log(`Trial ended, ran for ${duration} seconds`)
   statusUpdate('stopped')

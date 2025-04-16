@@ -1,6 +1,7 @@
 import { TrialInfo } from './models'
 
-export const SAVE_DIR = null // = '/home/labian/Documents/GLIDE/GLIDE_Test-1/'
+// = '/home/labian/Documents/GLIDE/GLIDE_Test-1/'
+export const SAVE_DIR = null
 
 export const defaultTrialInfo: TrialInfo = {
   name: '',

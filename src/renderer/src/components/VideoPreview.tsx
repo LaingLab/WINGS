@@ -1,16 +1,22 @@
-import { isRecordingAtom, outputPathAtom, tempTrialInfoAtom } from '@/store'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { isRecordingAtom, tempTrialInfoAtom } from '@/store'
+import { useAtom, useAtomValue } from 'jotai'
 import { CameraOff } from 'lucide-react'
-import { useEffect, useRef } from 'react'
-import RecordRTC from 'recordrtc'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+const QUALITY_OPTIONS = {
+  mimeType: 'video/webm;codecs=vp9',
+  videoBitsPerSecond: 8000000, // 8 Mbps
+  audioBitsPerSecond: 128000 // 128 kbps
+}
 
 export const VideoPreview = () => {
-  const [outputPath, setOutputPath] = useAtom(outputPathAtom)
   const { videoInfo } = useAtomValue(tempTrialInfoAtom)
-  const setIsRecording = useSetAtom(isRecordingAtom)
+  const [isRecording, setIsRecording] = useAtom(isRecordingAtom)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const recorderRef = useRef<RecordRTC | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
+  const recordingIdRef = useRef<string | null>(null)
+  const [recordingStats, setRecordingStats] = useState({ chunks: 0, size: 0 })
 
   useEffect(() => {
     const startPreview = async () => {
@@ -20,106 +26,148 @@ export const VideoPreview = () => {
         streamRef.current.getTracks().forEach((track) => track.stop())
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          deviceId: videoInfo.path,
-          width: { min: 1280, ideal: 1920, max: 1920 },
-          height: { min: 720, ideal: 1080, max: 1080 },
-          frameRate: { min: 30, ideal: 60 },
-          aspectRatio: { ideal: 16 / 9 }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            deviceId: videoInfo.path,
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+            frameRate: { ideal: 60 }
+          },
+          audio: false // Marking to remember for audio
+        })
+
+        streamRef.current = stream
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream
         }
-      })
-
-      streamRef.current = stream
-      if (videoRef.current) videoRef.current.srcObject = stream
+      } catch (err) {
+        console.error('Failed to access camera:', err)
+      }
     }
-    startPreview()
-  }, [videoInfo.path])
 
-  useEffect(() => {
+    startPreview()
+
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop())
       }
-      if (recorderRef.current) {
-        recorderRef.current.destroy()
-      }
     }
-  }, [])
+  }, [videoInfo.path])
 
-  const handleSelectOutputFolder = async () => {
-    const path = await (window as any).electronIPC.recording('select-output-folder')
-    if (path) setOutputPath(path)
-  }
-
-  const handleStartRecording = async () => {
-    if (!videoInfo.path || !outputPath || !streamRef.current) {
-      alert('Please select a camera and output path first.')
-      return
+  const startRecording = useCallback(async () => {
+    if (!streamRef.current || !videoInfo.fileName) {
+      console.error('Cannot start recording: stream or filename not available')
+      return false
     }
 
     try {
-      recorderRef.current = new RecordRTC(streamRef.current, {
-        type: 'video',
-        mimeType: 'video/mp4',
-        recorderType: RecordRTC.MediaStreamRecorder,
-        bitsPerSecond: 5100000,
-        videoBitsPerSecond: 12000000,
-        frameInterval: 1,
-        disableLogs: true,
-        timeSlice: 1000,
-        checkForInactiveTracks: true,
-        canvas: {
-          width: 1920,
-          height: 1080
-        }
+      const { recordingId, filePath } = await window.context.startRecording({
+        fileName: videoInfo.fileName,
+        outputFolder: videoInfo.outputFolder,
+        format: videoInfo.fileName.split('.').pop() || 'webm'
       })
 
-      recorderRef.current.startRecording()
-      setIsRecording(true)
-    } catch (error: any) {
-      console.error('Failed to start recording:', error)
-      alert(`Recording failed: ${error.message}`)
-    }
-  }
+      recordingIdRef.current = recordingId
+      console.log(`Starting recording to ${filePath}`)
 
-  const handleStopRecording = async () => {
-    if (!recorderRef.current) {
-      alert('No recording in progress')
-      return
-    }
+      const options = { ...QUALITY_OPTIONS }
+      mediaRecorderRef.current = new MediaRecorder(streamRef.current, options)
 
-    try {
-      return new Promise<void>((resolve) => {
-        recorderRef.current!.stopRecording(async () => {
-          const blob = recorderRef.current!.getBlob()
-          const arrayBuffer = await blob.arrayBuffer()
-          const result = await (window as any).electronIPC.recording('save-recording-file', {
-            filePath: outputPath,
-            data: arrayBuffer
+      mediaRecorderRef.current.ondataavailable = async (event) => {
+        if (event.data.size > 0 && recordingIdRef.current) {
+          const buffer = await event.data.arrayBuffer()
+          const result = await window.context.writeVideoChunk({
+            recordingId: recordingIdRef.current,
+            chunk: buffer
           })
 
-          if (result.success) {
-            setIsRecording(false)
-            alert(`Video saved: ${result.filePath}`)
-          } else {
-            alert(`Failed to save video: ${result.message}`)
-          }
+          setRecordingStats((prev) => ({
+            chunks: result.chunksWritten,
+            size: prev.size + buffer.byteLength
+          }))
+        }
+      }
 
-          recorderRef.current = null
-          resolve()
-        })
-      })
-    } catch (error: any) {
-      console.error('Failed to stop recording:', error)
-      alert(`Failed to stop recording: ${error.message}`)
+      mediaRecorderRef.current.start(1000) // Data update rate
+      setIsRecording(true)
+
+      return true
+    } catch (error) {
+      console.error('Failed to start recording:', error)
+      return false
     }
-  }
+  }, [videoInfo, streamRef, setIsRecording])
+
+  const stopRecording = useCallback(async () => {
+    if (!mediaRecorderRef.current || !recordingIdRef.current) {
+      return false
+    }
+
+    try {
+      return new Promise<boolean>((resolve) => {
+        mediaRecorderRef.current!.onstop = async () => {
+          try {
+            const result = await window.context.stopRecording({
+              recordingId: recordingIdRef.current!
+            })
+
+            setIsRecording(false)
+            console.log(`Recording saved to ${result.filePath}`)
+            console.log(
+              `Recorded ${result.totalChunks} chunks, approximately ${Math.round(recordingStats.size / 1024 / 1024)}MB`
+            )
+
+            mediaRecorderRef.current = null
+            recordingIdRef.current = null
+            setRecordingStats({ chunks: 0, size: 0 })
+
+            resolve(true)
+          } catch (err) {
+            console.error('Error finalizing recording:', err)
+            resolve(false)
+          }
+        }
+
+        mediaRecorderRef.current!.requestData()
+        mediaRecorderRef.current!.stop()
+      })
+    } catch (error) {
+      console.error('Failed to stop recording:', error)
+      return false
+    }
+  }, [mediaRecorderRef, recordingIdRef, setIsRecording])
+
+  useEffect(() => {
+    const handleVideoControl = (command: string) => {
+      if (command === 'start-recording') {
+        startRecording()
+      } else if (command === 'stop-recording') {
+        stopRecording()
+      }
+    }
+    const unsubscribe = window.context.onVideoControl(handleVideoControl)
+    return () => unsubscribe()
+  }, [startRecording, stopRecording])
 
   return (
     <>
       {videoInfo.path ? (
-        <video ref={videoRef} className="w-[960px] rounded-xl" autoPlay playsInline />
+        <div className="relative h-full w-full">
+          <video
+            ref={videoRef}
+            className="h-full w-full rounded-xl object-cover"
+            autoPlay
+            playsInline
+            muted
+          />
+          {isRecording && (
+            <div className="absolute top-2 right-2 flex items-center rounded-md bg-red-500 px-2 py-1 text-xs text-white">
+              <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-white" />
+              Recording {/** recordingStats.chunks > 0 && `(${recordingStats.chunks} chunks)` */}
+            </div>
+          )}
+        </div>
       ) : (
         <CameraOff size={80} className="text-neutral-800" />
       )}

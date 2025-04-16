@@ -8,6 +8,7 @@ import {
   OnArduinoPinUpdate,
   OnTrialInfo,
   OnTrialLog,
+  OnVideoControl,
   PrimeArduino,
   ReadFile,
   RunTrial,
@@ -32,6 +33,9 @@ declare global {
       primeArduino: PrimeArduino
 
       // Video
+      startRecording: StartRecording
+      writeVideoChunk: WriteVideoChunk
+      stopRecording: StopRecording
 
       // Event Listeners
       onTrialLog: OnTrialLog
@@ -40,6 +44,8 @@ declare global {
       onArduinoInfo: OnArduinoInfo
       onArduinoPinUpdate: OnArduinoPinUpdate
       onArduinoEvent: OnArduinoEvent
+
+      onVideoControl: OnVideoControl
     }
   }
 }

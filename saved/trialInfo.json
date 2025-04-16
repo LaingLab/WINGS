@@ -1,15 +1,15 @@
 {
-  "name": "Test Trial",
+  "name": "Testing",
   "status": "setup",
   "duration": "",
   "videoInfo": {
-    "label": "onn. USB 2.0 webcam (3938:1299)",
-    "path": "170bc02ccd497447a13ed868c49654281c61770f2e2f10430dcee5ba1464807c",
-    "fileName": "Testing.mp4",
-    "outputFolder": "/home/labian/Documents/GLIDE/GLIDE_Test-1/"
+    "label": "USB2.0 FHD UVC WebCam (3277:0060)",
+    "path": "6f41c94d944e37c6c0d8a23d826b8842deedff1e85505e1c564a9f5ce4cba476",
+    "fileName": "TestingVideo2.mp4",
+    "outputFolder": ""
   },
   "arduinoInfo": {
-    "path": "/dev/ttyACM0",
+    "path": "/dev/idgaf",
     "status": "disconnected",
     "primed": false,
     "pins": []
