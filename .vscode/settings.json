@@ -22,7 +22,7 @@
     ".prettierrc.yaml": true,
     "eslint.config.mjs": true,
     "pnpm-lock.yaml": true,
-    ".gitignore": true,
+    ".gitignore": false,
     "electron-builder.yml": true,
     "tsconfig.json": true,
     "package.json": true,
