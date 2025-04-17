@@ -1,3 +1,4 @@
+import commonjs from '@rollup/plugin-commonjs'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
@@ -6,7 +7,12 @@ import { resolve } from 'path'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin(), commonjs({ ignoreDynamicRequires: true })],
+    build: {
+      rollupOptions: {
+        external: ['serialport', 'bindings', /^@serialport\//]
+      }
+    },
     resolve: {
       alias: {
         '@/lib': resolve('src/main/lib'),

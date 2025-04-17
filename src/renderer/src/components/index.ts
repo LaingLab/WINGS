@@ -1,6 +1,7 @@
 // export components here
 export * from './AppLayout'
 export * from './ArduinoInfoArea'
+export * from './DebugPage'
 export * from './EventInfoArea'
 export * from './TrialActions'
 export * from './TrialInfoArea'

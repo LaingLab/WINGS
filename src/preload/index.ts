@@ -19,6 +19,8 @@ try {
     // Arduino
     arduinoConnect: () => ipcInvoke('arduino-connect'),
     primeArduino: () => ipcInvoke('prime-aruino'),
+    toggleLed: (params) => ipcInvoke('toggle-led', params),
+    togglePump: (params) => ipcInvoke('toggle-pump', params),
 
     // Video
     startRecording: (options) => ipcInvoke('video:start-recording', options),

@@ -16,6 +16,17 @@ export type EndTrial = () => void
 // Arduino
 export type ArduinoConnect = () => void
 export type PrimeArduino = () => void
+export type ToggleLed = (params: {
+  state: string
+  pin?: number
+  freq?: number
+  inputLed?: any
+}) => void
+export type TogglePump = (params: {
+  pins: [number, number, number]
+  state: string
+  speed?: number
+}) => void
 
 // Video
 export type StartRecording = (options: {

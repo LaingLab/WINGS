@@ -11,7 +11,9 @@ import {
   readFile,
   runTrial,
   saveTrialInfo,
-  setupVideoHandlers
+  setupVideoHandlers,
+  toggleLed,
+  togglePump
 } from '@/lib'
 
 import icon from '../../resources/icon.png?asset'
@@ -91,6 +93,14 @@ const ipcEvents = () => {
   // Arduino
   ipcMain.handle('arduino-connect', () => connect())
   ipcMain.handle('prime-aruino', () => prime())
+  ipcMain.handle('toggle-led', async (_, params) => {
+    await toggleLed(params)
+    return null
+  })
+  ipcMain.handle('toggle-pump', async (_, params) => {
+    await togglePump(params)
+    return null
+  })
 
   // Video
 }

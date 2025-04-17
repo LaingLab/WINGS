@@ -1,5 +1,6 @@
 import { tempTrialInfoAtom } from '@/store'
 import { useImmerAtom } from 'jotai-immer'
+import { X } from 'lucide-react'
 import { TopTrialActions } from './TrialActions'
 import { VideoSelector } from './VideoSelector'
 
@@ -77,17 +78,30 @@ export const TrialInputs = () => {
           <button onClick={handleAddPin}>Add Pin</button>
           {tempTrialInfo.arduinoInfo.pins.map((pin, i) => (
             <div key={i} className="flex gap-1">
-              <input
-                className="w-24"
-                type="text"
-                placeholder="type"
+              <button
+                className="flex items-center justify-center"
+                onClick={() =>
+                  setTempTrialInfo((draft) => {
+                    draft.arduinoInfo.pins.splice(i, 1)
+                  })
+                }
+              >
+                <X />
+              </button>
+              <select
+                className="btn w-24 bg-neutral-800 px-1"
                 value={pin.type}
                 onChange={(e) =>
                   setTempTrialInfo((draft) => {
                     draft.arduinoInfo.pins[i].type = e.target.value
                   })
                 }
-              />
+              >
+                <option value="led">led</option>
+                <option value="switch">switch</option>
+                <option value="sensor">sensor</option>
+                <option value="pump">pump</option>
+              </select>
               <input
                 type="text"
                 placeholder="pin"

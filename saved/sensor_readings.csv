@@ -1,6 +1,0 @@
-timestamp,id,pin,type,value
-2025-04-16T22:22:04.425Z,led-13,13,led,off
-2025-04-16T22:22:10.353Z,led-13,13,led,on
-2025-04-16T22:22:11.313Z,switch-3,3,switch,closed
-2025-04-16T22:22:20.818Z,switch-3,3,switch,open
-2025-04-16T22:22:21.819Z,led-13,13,led,off

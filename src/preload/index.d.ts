@@ -12,7 +12,9 @@ import {
   PrimeArduino,
   ReadFile,
   RunTrial,
-  SaveTrialInfo
+  SaveTrialInfo,
+  ToggleLed,
+  TogglePump
 } from '@shared/types'
 
 declare global {
@@ -31,6 +33,8 @@ declare global {
       // Arduino
       arduinoConnect: ArduinoConnect
       primeArduino: PrimeArduino
+      toggleLed: ToggleLed
+      togglePump: TogglePump
 
       // Video
       startRecording: StartRecording

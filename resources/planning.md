@@ -16,6 +16,7 @@
 - [x] Refactor arduino backend code to be more modular
 - [x] Arduino pin editor (UI - key value store)
 - [x] Setup pump/atomizer device
+- [ ] Debug View -- Started
 - [ ] Improve logging
 - [ ] Results View
 

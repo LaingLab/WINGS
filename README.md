@@ -1,9 +1,12 @@
 # WINGS
+
 A testing program for LaingLab's GLIDE software
 
-## Recommended IDE Setup
+## Some Notes
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- Files are saved in the root repositiory folder by default
+- The arduino should connect automatically regardless of the entered name
+- Long videos may take awhile to convert to mp4 due to ffmpeg
 
 ## Project Setup
 

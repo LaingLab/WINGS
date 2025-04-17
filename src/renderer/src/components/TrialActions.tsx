@@ -1,6 +1,8 @@
 import { tempTrialInfoAtom, trialInfoAtom } from '@/store'
 import { defaultTrialInfo } from '@shared/constants'
 import { useAtom, useAtomValue } from 'jotai'
+import { Cog } from 'lucide-react'
+import { Link } from 'react-router'
 import { twMerge } from 'tailwind-merge'
 
 export const TopTrialActions = () => {
@@ -23,12 +25,17 @@ export const TopTrialActions = () => {
     setTempTrialInfo(defaultTrialInfo)
   }
 
-  const canSave = trialInfo != tempTrialInfo
+  const canSave = trialInfo !== tempTrialInfo
 
-  const canReset = tempTrialInfo != defaultTrialInfo
+  const canReset = tempTrialInfo !== defaultTrialInfo
 
   return (
     <div className="flex gap-1">
+      <Link to="/debug">
+        <button className="flex w-10 items-center justify-center text-white/80">
+          <Cog />
+        </button>
+      </Link>
       <button
         type="submit"
         onClick={onSubmit}
