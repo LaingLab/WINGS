@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 # WINGS
 A testing program for LaingLab's GLIDE software
-=======
-# Glide V2
-
-An Electron application with React and TypeScript
 
 ## Recommended IDE Setup
 
@@ -36,4 +31,3 @@ $ pnpm build:mac
 # For Linux
 $ pnpm build:linux
 ```
->>>>>>> V2
