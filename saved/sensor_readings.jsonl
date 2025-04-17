@@ -1,0 +1,5 @@
+{"timestamp":"2025-04-16T22:22:04.425Z","id":"led-13","pin":13,"type":"led","value":"off"}
+{"timestamp":"2025-04-16T22:22:10.353Z","id":"led-13","pin":13,"type":"led","value":"on"}
+{"timestamp":"2025-04-16T22:22:11.313Z","id":"switch-3","pin":"3","type":"switch","value":"closed","options":{}}
+{"timestamp":"2025-04-16T22:22:20.818Z","id":"switch-3","pin":"3","type":"switch","value":"open","options":{}}
+{"timestamp":"2025-04-16T22:22:21.819Z","id":"led-13","pin":13,"type":"led","value":"off"}

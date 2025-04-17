@@ -1,0 +1,50 @@
+@import 'tailwindcss';
+
+@layer base {
+  #root {
+    @apply h-full;
+  }
+
+  html,
+  body {
+    @apply h-full;
+
+    @apply select-none;
+
+    @apply bg-neutral-950;
+
+    @apply text-white antialiased;
+
+    @apply overflow-hidden;
+  }
+
+  header {
+    -webkit-app-region: drag;
+  }
+
+  button {
+    -webkit-app-region: no-drag;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-md bg-[#555];
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+}
+
+@layer components {
+  .trialInputs input {
+    @apply w-full rounded-md border border-white/15 p-2 py-1.5;
+  }
+
+  .trialInputs button {
+    @apply w-full rounded-md border border-white/15 bg-neutral-700/50 py-1 duration-150 hover:bg-transparent;
+  }
+}

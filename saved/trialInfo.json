@@ -1,0 +1,30 @@
+{
+  "name": "Testing Trial",
+  "status": "setup",
+  "duration": "",
+  "videoInfo": {
+    "label": "onn. USB 2.0 webcam (3938:1299)",
+    "path": "170bc02ccd497447a13ed868c49654281c61770f2e2f10430dcee5ba1464807c",
+    "fileName": "Testing2.mp4",
+    "outputFolder": ""
+  },
+  "arduinoInfo": {
+    "path": "/dev/ttyACM0",
+    "status": "disconnected",
+    "primed": false,
+    "pins": [
+      {
+        "id": "led-13",
+        "pin": "3",
+        "type": "switch",
+        "value": "open"
+      }
+    ]
+  },
+  "settings": {},
+  "data": {
+    "logs": [],
+    "events": [],
+    "sensorData": ""
+  }
+}
