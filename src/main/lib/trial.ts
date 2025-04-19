@@ -9,7 +9,7 @@ Trial Runtime
 
 import { TrialInfo } from '@shared/models'
 import { mainWindow } from '..'
-import { connect } from './arduino'
+import { connect, initBoard } from './arduino'
 import { convertToCSV } from './file'
 import { log as logFn } from './log'
 import { wait } from './utils'
@@ -34,7 +34,9 @@ export async function runTrial(trialInfo: TrialInfo) {
 
   await connect(trialInfo.arduinoInfo.path, trialInfo.arduinoInfo.pins)
 
-  await wait(1000)
+  await initBoard()
+
+  await wait(3000)
 
   // Start Recording
   log(`Starting video recording...`)

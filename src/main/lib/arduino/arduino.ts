@@ -13,49 +13,67 @@ let pins: ArduinoPin[]
 export async function connect(pathName?, inputPins?: ArduinoPin[]) {
   sendLog(`Connect function called`)
 
-  try {
-    if (board) {
-      sendLog('Removing all connected devices...')
-      disconnect({ noLog: true })
-    }
+  await wait(500)
 
-    sendLog('Connecting to board...')
-    board = await new five.Board({
-      repl: false,
-      port: pathName
-    })
-    pins = inputPins ?? []
-
-    board.on('ready', () => {
-      sendLog(`Board ready`)
-      initBoard().then(() => updateInfo({ status: 'connected', path: board?.port }))
-      sendLog(`Board connected @ ${board?.port}`)
-    })
-
-    board.on('exit', () => {
-      disconnect()
-    })
-  } catch (e) {
-    console.error(e)
+  if (board) {
+    sendLog('Removing all connected devices...')
+    disconnect({ noLog: true })
   }
+
+  await wait(500)
+
+  sendLog('Connecting to board...')
+  board = new five.Board({
+    repl: false,
+    port: pathName
+  })
+  pins = inputPins ?? []
+
+  // wait here until the board truly fires 'ready'
+  await new Promise<void>((resolve) => {
+    board?.on('ready', () => {
+      sendLog(`Board connected @ ${board?.port}`)
+      updateInfo({ status: 'connected', path: board?.port })
+      resolve()
+    })
+  })
+
+  board.on('exit', () => {
+    disconnect()
+  })
 }
 
-async function initBoard() {
+export async function initBoard() {
+  await wait(500)
+
   sendLog('Initializing board...')
 
-  try {
-    await initPins()
-
-    unprime()
-  } catch (e) {
-    console.error(e)
-  } finally {
-    sendLog('Board initialized')
+  if (!board) {
+    console.log('No board found')
+    sendLog('Board not found.')
+    return 1
   }
+
+  await initPins()
+
+  await wait(1000)
+
+  await prime(false)
+
+  await wait(800)
+
+  sendLog('Board initialized')
+
+  await wait(2000)
+
+  sendLog(`Board ready`)
+
   return 1
 }
 
 async function initPins() {
+  await wait(500)
+
   pins.map((pin: ArduinoPin) => {
     sendLog(`Initializing ${pin.type} @ pin ${pin.pin}`)
     if (pin.type == 'sensor') {
@@ -108,7 +126,8 @@ async function initPins() {
             value: 'open',
             options: { ...pin.options }
           })
-          unprime()
+
+          prime(false)
         } else if (!waiting && !primed) {
           sendLog('Arduino is not primed, cannot activate switch.')
           waiting = true
@@ -132,6 +151,26 @@ async function initPins() {
   return 1
 }
 
+export async function prime(prime = true) {
+  if (!primed && prime) {
+    sendLog('Priming...')
+    await wait(500)
+
+    toggleLed({ pin: 13, state: 'on', noLog: true })
+    updateInfo({ primed: true })
+    primed = true
+    return 'primed'
+  } else {
+    sendLog('Unpriming...')
+    await wait(500)
+
+    toggleLed({ pin: 13, state: 'off', noLog: true })
+    updateInfo({ primed: false })
+    primed = false
+    return 'unprimed'
+  }
+}
+
 async function disconnect(params?: { noLog: boolean }) {
   primed = false
   waiting = false
@@ -143,26 +182,4 @@ async function disconnect(params?: { noLog: boolean }) {
     sendLog('Disconnected')
     updateInfo({ status: 'disconnected' })
   }
-}
-
-export async function prime() {
-  if (!primed) {
-    sendLog('Priming...')
-    await wait(1000)
-    toggleLed({ pin: 13, state: 'on' })
-    primed = true
-    updateInfo({ primed: true })
-    return 'primed'
-  } else {
-    return unprime()
-  }
-}
-
-async function unprime() {
-  sendLog('Unpriming...')
-  await wait(1000)
-  toggleLed({ pin: 13, state: 'off' })
-  primed = false
-  updateInfo({ primed: false })
-  return 'unprimed'
 }

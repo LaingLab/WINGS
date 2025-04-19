@@ -23,6 +23,21 @@ export type ArduinoPin = {
   options?: Record<string, number>
 }
 
+export type ArduinoLed = {
+  state: string
+  pin?: number
+  freq?: number
+  inputLed?: any
+  noLog?: boolean
+}
+
+export type ArduinoPump = {
+  id?: string
+  speed?: number
+  state?: string
+  pins: [number, number, number]
+}
+
 export type VideoInfo = {
   label: string
   path: string
