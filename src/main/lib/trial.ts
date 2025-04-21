@@ -32,9 +32,13 @@ export async function runTrial(trialInfo: TrialInfo) {
   log(`Starting trial... ${JSON.stringify(trialInfo)}`)
   running = true
 
-  await connect(trialInfo.arduinoInfo.path, trialInfo.arduinoInfo.pins)
+  try {
+    await connect(trialInfo.arduinoInfo.path, trialInfo.arduinoInfo.pins)
 
-  await initBoard()
+    await initBoard()
+  } catch (error) {
+    log('Failed to connect to the board: skipping board initialization.')
+  }
 
   await wait(3000)
 

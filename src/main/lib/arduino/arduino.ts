@@ -30,8 +30,14 @@ export async function connect(pathName?, inputPins?: ArduinoPin[]) {
   pins = inputPins ?? []
 
   // wait here until the board truly fires 'ready'
-  await new Promise<void>((resolve) => {
+  await new Promise<void>((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      sendLog('Could not connect to board within 15 seconds.')
+      updateInfo({ status: 'error', message: 'Connection timeout' })
+      reject(new Error('Timeout connecting to board'))
+    }, 15000)
     board?.on('ready', () => {
+      clearTimeout(timeout)
       sendLog(`Board connected @ ${board?.port}`)
       updateInfo({ status: 'connected', path: board?.port })
       resolve()
