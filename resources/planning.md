@@ -21,6 +21,11 @@
   - [ ] Save trial results into JSON file
 - [ ] Improve Logging
 
+## Notes
+
+- Make pump pins discrete
+- Frontend btn unprime state
+
 ## Other Stuff
 
 ### Yap Area

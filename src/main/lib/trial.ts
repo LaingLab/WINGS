@@ -10,7 +10,7 @@ Trial Runtime
 import { TrialInfo } from '@shared/models'
 import { mainWindow } from '..'
 import { connect, initBoard } from './arduino'
-import { convertToCSV } from './file'
+import { convertToCSV, updateFileDir } from './file'
 import { log as logFn } from './log'
 import { wait } from './utils'
 
@@ -31,6 +31,10 @@ const statusUpdate = (status: string) => {
 export async function runTrial(trialInfo: TrialInfo) {
   log(`Starting trial... ${JSON.stringify(trialInfo)}`)
   running = true
+
+  // Set Trial Folder to save to
+  updateFileDir(`${trialInfo.name}`)
+  log(`Starting trial... ${JSON.stringify(trialInfo)}`)
 
   try {
     await connect(trialInfo.arduinoInfo.path, trialInfo.arduinoInfo.pins)
@@ -69,23 +73,16 @@ export async function endTrial() {
 
   await wait(2000)
 
-  log(`Saving results to file...`)
-
-  const trialResults = {
-    duration
-    // logFile,
-    // dataFile,
-    // eventFile,
-    // videoFile
-  }
-
-  // await saveTrialResults()
-
   log(`Converting data to csv...`)
   statusUpdate('cleanup')
   await convertToCSV('sensor_readings', 'jsonl')
 
   await wait(3000)
+
+  log(`Trial ended, ran for ${duration} seconds`)
+  updateFileDir()
+
+  await wait(1000)
 
   log(`Trial ended, ran for ${duration} seconds`)
   statusUpdate('stopped')

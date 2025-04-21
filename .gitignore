@@ -4,4 +4,4 @@ out
 .DS_Store
 .eslintcache
 *.log*
-saved/*.mp4
+saved

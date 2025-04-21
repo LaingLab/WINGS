@@ -14,9 +14,9 @@ export const DebugPage = () => {
     })
   }
 
-  const togglePump = (pin: number, state: string, speed?: number) => {
+  const togglePump = (pin: number, state: string, speed?: number, reversePins = false) => {
     window.context.togglePump({
-      pins: [pin, pin + 1, pin + 2],
+      pins: reversePins ? [pin, pin - 1, pin - 2] : [pin, pin + 1, pin + 2],
       state,
       speed
     })
@@ -67,7 +67,7 @@ export const DebugPage = () => {
                   </button>
                   <button
                     className="btn w-10"
-                    onClick={() => togglePump(Number(pin.pin), 'on', 25)}
+                    onClick={() => togglePump(Number(pin.pin), 'on', 25, Number(pin.pin) === 10)}
                   >
                     on
                   </button>

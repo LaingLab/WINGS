@@ -7,10 +7,18 @@ import path from 'path'
 import { SAVE_DIR } from '@shared/constants'
 import { sendLog } from './arduino'
 
-export const FILE_DIR = SAVE_DIR ?? path.join(__dirname, '../../saved')
+export let FILE_DIR = SAVE_DIR ?? path.join(__dirname, '../../saved')
+
+export function updateFileDir(newDir?: string) {
+  if (newDir) {
+    FILE_DIR = SAVE_DIR ?? path.join(__dirname, `../../saved/${newDir}`)
+  } else {
+    FILE_DIR = SAVE_DIR ?? path.join(__dirname, '../../saved')
+  }
+}
 
 export function saveTrialInfo(data: object): void {
-  const dir = FILE_DIR
+  const dir = SAVE_DIR ?? path.join(__dirname, '../../saved')
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 
   const filePath = path.join(dir, 'trialInfo.json')

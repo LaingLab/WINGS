@@ -23,9 +23,9 @@ export class PumpController {
     this.int2.low()
   }
 
-  reverse(speed = 255) {
+  reverse(speed) {
     this.int1.low()
     this.int2.high()
-    this.ena.write(speed)
+    this.ena.write(speed ?? 25)
   }
 }
