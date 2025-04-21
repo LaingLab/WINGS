@@ -17,9 +17,9 @@
 - [x] Arduino pin editor (UI - key value store)
 - [x] Setup pump/atomizer device
 - [x] Basic Pin Debug View
-- [ ] Results View
-  - [ ] Save trial results into JSON file
+- [ ] Results View -- Started
 - [ ] Improve Logging
+- [ ] Serious Refactoring - reusable components
 
 ## Notes
 

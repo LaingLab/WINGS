@@ -29,7 +29,7 @@ const statusUpdate = (status: string) => {
 
 // Run trial
 export async function runTrial(trialInfo: TrialInfo) {
-  log(`Starting trial... ${JSON.stringify(trialInfo)}`)
+  log(`Starting Trial...`)
   running = true
 
   // Set Trial Folder to save to
@@ -65,7 +65,6 @@ export async function endTrial() {
   clearInterval(countInterval)
   statusUpdate('saving')
 
-  // Stop recording
   log(`Stopping video recording...`)
   mainWindow.webContents.send('video-control', 'stop-recording')
 
@@ -79,12 +78,18 @@ export async function endTrial() {
 
   await wait(3000)
 
+  log(`Saving results...`)
+
+  // await saveTrialResults()
+
+  await wait(1000)
+
   log(`Trial ended, ran for ${duration} seconds`)
   updateFileDir()
 
   await wait(1000)
 
-  log(`Trial ended, ran for ${duration} seconds`)
+  log(`Trial ended.`)
   statusUpdate('stopped')
 }
 

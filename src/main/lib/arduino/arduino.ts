@@ -2,7 +2,7 @@ import five from 'johnny-five'
 
 import { ArduinoPin } from '@shared/models'
 import { wait } from '../utils'
-import { realCycle, sendEvent, sendLog, toggleLed, updateInfo, updatePin } from './'
+import { realCycle, sendEvent, sendLog, updateInfo, updatePin } from './'
 
 let primed = false
 let waiting = false
@@ -64,13 +64,9 @@ export async function initBoard() {
 
   await wait(1000)
 
-  await prime(false)
-
-  await wait(800)
-
   sendLog('Board initialized')
 
-  await wait(2000)
+  await wait(1500)
 
   sendLog(`Board ready`)
 
@@ -162,7 +158,6 @@ export async function prime(prime = true) {
     sendLog('Priming...')
     await wait(500)
 
-    toggleLed({ pin: 13, state: 'on', noLog: true })
     updateInfo({ primed: true })
     primed = true
     return 'primed'
@@ -170,7 +165,6 @@ export async function prime(prime = true) {
     sendLog('Unpriming...')
     await wait(500)
 
-    toggleLed({ pin: 13, state: 'off', noLog: true })
     updateInfo({ primed: false })
     primed = false
     return 'unprimed'

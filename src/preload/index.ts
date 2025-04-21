@@ -7,10 +7,12 @@ if (!process.contextIsolated) {
 try {
   contextBridge.exposeInMainWorld('context', {
     // File
-    fileExists: (filenme) => ipcInvoke('file-exists', filenme),
+    fileExists: (filename) => ipcInvoke('file-exists', filename),
     readFile: (params: { filename; filetype }) => ipcInvoke('read-file', params),
     saveTrialInfo: (trialInfo) => ipcInvoke('save-trial-info', trialInfo),
     deleteTrialInfo: () => ipcInvoke('delete-trial-info'),
+    listTrials: () => ipcInvoke('list-trials'),
+    updateFileDir: (trialFolder: string) => ipcInvoke('update-file-dir', trialFolder),
 
     // Trial
     runTrial: (trialInfo) => ipcInvoke('run-trial', trialInfo),
@@ -30,11 +32,9 @@ try {
     // Event Listeners
     onTrialLog: (callback) => ipcOn('trial-log', callback),
     onTrialInfo: (callback) => ipcOn('trial-info', callback),
-
     onArduinoInfo: (callback) => ipcOn('arduino-info', callback),
     onArduinoPinUpdate: (callback) => ipcOn('arduino-pin', callback),
     onArduinoEvent: (callback) => ipcOn('arduino-event', callback),
-
     onVideoControl: (callback) => ipcOn('video-control', callback)
   })
 } catch (error) {

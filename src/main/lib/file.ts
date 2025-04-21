@@ -15,6 +15,7 @@ export function updateFileDir(newDir?: string) {
   } else {
     FILE_DIR = SAVE_DIR ?? path.join(__dirname, '../../saved')
   }
+  return FILE_DIR
 }
 
 export function saveTrialInfo(data: object): void {
@@ -129,6 +130,7 @@ export async function convertToCSV(filename: string, filetype: 'json' | 'jsonl')
   }
 }
 
+// const logsText = readFile('logs', 'txt')
 export function readFile(filename: string, filetype: 'txt' | 'json' | 'jsonl' | 'csv') {
   const filePath = path.join(FILE_DIR, `${filename}.${filetype}`)
 
@@ -180,6 +182,7 @@ export function readFile(filename: string, filetype: 'txt' | 'json' | 'jsonl' | 
   }
 }
 
+// const exists = fileExists('myFile.txt');
 export function fileExists(filename) {
   const dirPath = FILE_DIR
 
@@ -197,7 +200,11 @@ export function fileExists(filename) {
   return false
 }
 
-// const logsText = readFile('logs', 'txt')
-// console.log(logsText)
-
-// const exists = fileExists('myFile.txt');
+export function listTrials(): string[] {
+  if (!fs.existsSync(FILE_DIR)) {
+    console.error('Saved directory does not exist')
+    return []
+  }
+  const entries = fs.readdirSync(FILE_DIR, { withFileTypes: true })
+  return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
+}

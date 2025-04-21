@@ -7,13 +7,15 @@ import {
   deleteTrialInfo,
   endTrial,
   fileExists,
+  listTrials,
   prime,
   readFile,
   runTrial,
   saveTrialInfo,
   setupVideoHandlers,
   toggleLed,
-  togglePump
+  togglePump,
+  updateFileDir
 } from '@/lib'
 
 import icon from '../../resources/icon.png?asset'
@@ -31,7 +33,8 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
-      contextIsolation: true
+      contextIsolation: true,
+      webSecurity: false
     }
   })
 
@@ -85,6 +88,10 @@ const ipcEvents = () => {
   )
   ipcMain.handle('save-trial-info', (_, trialInfo) => saveTrialInfo(trialInfo))
   ipcMain.handle('delete-trial-info', () => deleteTrialInfo())
+  ipcMain.handle('list-trials', () => listTrials())
+  ipcMain.handle('update-file-dir', (_, trialFolder: string) => {
+    return updateFileDir(trialFolder)
+  })
 
   // Trial
   ipcMain.handle('run-trial', (_, trialInfo) => runTrial(trialInfo))

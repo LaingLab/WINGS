@@ -82,9 +82,14 @@ export function setupVideoHandlers() {
             .on('end', () => {
               console.log('Conversion finished')
 
-              // Remove temp file
-              fs.unlink(recording.tempFilePath, (err) => {
-                if (err) console.error('Error removing temp file:', err)
+              // Rename temp file to video.wbem
+              const newFilePath = path.join(path.dirname(recording.tempFilePath), 'video.webm')
+              fs.rename(recording.tempFilePath, newFilePath, (err) => {
+                if (err) {
+                  console.error('Error renaming temp file:', err)
+                } else {
+                  console.log('Temp file renamed to', newFilePath)
+                }
               })
 
               const result = {

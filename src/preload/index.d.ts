@@ -3,6 +3,7 @@ import {
   DeleteTrialInfo,
   EndTrial,
   FileExists,
+  ListTrials,
   OnArduinoEvent,
   OnArduinoInfo,
   OnArduinoPinUpdate,
@@ -14,7 +15,8 @@ import {
   RunTrial,
   SaveTrialInfo,
   ToggleLed,
-  TogglePump
+  TogglePump,
+  UpdateFileDir
 } from '@shared/types'
 
 declare global {
@@ -25,6 +27,8 @@ declare global {
       readFile: ReadFile
       saveTrialInfo: SaveTrialInfo
       deleteTrialInfo: DeleteTrialInfo
+      listTrials: ListTrials
+      updateFileDir: UpdateFileDir
 
       // Trial
       runTrial: RunTrial
