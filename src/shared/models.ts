@@ -8,6 +8,36 @@ export type TrialInfo = {
   data?: TrialData
 }
 
+export type TrialSettings = {
+  idk?: string
+}
+
+export type TrialData = {
+  events: TrialEvent[]
+  results?: TrialResults
+  sensorData?: string
+  logs?: TrialLog[]
+}
+
+export type TrialResults = {
+  duration: number
+  logFile: string
+  dataFile: string
+  eventFile: string
+  videoFile: string
+}
+
+export type TrialEvent = {
+  name: string
+  type: string
+  time: string
+}
+
+export type TrialLog = {
+  data: string
+  time: string
+}
+
 export type ArduinoInfo = {
   path: string
   status: string
@@ -43,25 +73,4 @@ export type VideoInfo = {
   path: string
   fileName: string
   outputFolder: string
-}
-
-export type TrialData = {
-  events: TrialEvent[]
-  sensorData?: string
-  logs?: TrialLog[]
-}
-
-export type TrialEvent = {
-  name: string
-  type: string
-  time: string
-}
-
-export type TrialLog = {
-  data: string
-  time: string
-}
-
-export type TrialSettings = {
-  idk?: string
 }

@@ -1,7 +1,7 @@
 import { tempTrialInfoAtom, trialInfoAtom } from '@/store'
 import { defaultTrialInfo } from '@shared/constants'
 import { useAtom, useAtomValue } from 'jotai'
-import { Cog } from 'lucide-react'
+import { ChartSpline, Cog, RefreshCcwDot, Save } from 'lucide-react'
 import { Link } from 'react-router'
 import { twMerge } from 'tailwind-merge'
 
@@ -30,28 +30,43 @@ export const TopTrialActions = () => {
   const canReset = tempTrialInfo !== defaultTrialInfo
 
   return (
-    <div className="flex gap-1">
-      <Link to="/debug">
-        <button className="flex w-10 items-center justify-center text-white/80">
-          <Cog />
+    <div className="flex justify-between gap-1">
+      <div className="flex gap-1">
+        <Link to="/debug">
+          <button className="flex w-10 items-center justify-center text-white/80">
+            <Cog />
+          </button>
+        </Link>
+        <Link to="/results">
+          <button className="flex w-10 items-center justify-center text-white/80">
+            <ChartSpline />
+          </button>
+        </Link>
+      </div>
+      <div className="flex gap-1">
+        <button
+          type="submit"
+          onClick={onSubmit}
+          disabled={!canSave}
+          className={twMerge(
+            'flex w-10 items-center justify-center text-white/80 opacity-50',
+            canSave && 'opacity-100'
+          )}
+        >
+          <Save />
         </button>
-      </Link>
-      <button
-        type="submit"
-        onClick={onSubmit}
-        disabled={!canSave}
-        className={twMerge('opacity-50', canSave && 'opacity-100')}
-      >
-        Save
-      </button>
-      <button
-        type="button"
-        onClick={onReset}
-        disabled={!canReset}
-        className={twMerge('opacity-50', canReset && 'opacity-100')}
-      >
-        Reset
-      </button>
+        <button
+          type="button"
+          onClick={onReset}
+          disabled={!canReset}
+          className={twMerge(
+            'flex w-10 items-center justify-center text-white/80 opacity-50',
+            canReset && 'opacity-100'
+          )}
+        >
+          <RefreshCcwDot />
+        </button>
+      </div>
     </div>
   )
 }

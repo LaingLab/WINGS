@@ -69,6 +69,18 @@ export async function endTrial() {
 
   await wait(2000)
 
+  log(`Saving results to file...`)
+
+  const trialResults = {
+    duration
+    // logFile,
+    // dataFile,
+    // eventFile,
+    // videoFile
+  }
+
+  // await saveTrialResults()
+
   log(`Converting data to csv...`)
   statusUpdate('cleanup')
   await convertToCSV('sensor_readings', 'jsonl')

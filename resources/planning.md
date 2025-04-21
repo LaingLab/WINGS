@@ -1,4 +1,4 @@
-# Use to plan
+\*\*\*\*# Use to plan
 
 ## Plan
 
@@ -16,9 +16,10 @@
 - [x] Refactor arduino backend code to be more modular
 - [x] Arduino pin editor (UI - key value store)
 - [x] Setup pump/atomizer device
-- [ ] Debug View -- Started
-- [ ] Improve logging
+- [x] Basic Pin Debug View
 - [ ] Results View
+  - [ ] Save trial results into JSON file
+- [ ] Improve Logging
 
 ## Other Stuff
 

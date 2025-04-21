@@ -13,6 +13,7 @@ import {
 } from '@/components'
 import { useArduinoListener, useLogListener, useTrial } from '@/hooks'
 import { Route, BrowserRouter as Router, Routes } from 'react-router'
+import ResultsPage from './components/ResultsPage'
 
 export default function App() {
   useArduinoListener()
@@ -46,6 +47,7 @@ function ReactRouter({ children }) {
       <Routes>
         <Route path="/" element={children} />
         <Route path="/debug" element={<DebugPage />} />
+        <Route path="/results" element={<ResultsPage />} />
       </Routes>
     </Router>
   )

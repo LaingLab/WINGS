@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { SAVE_DIR } from '@shared/constants'
+import { sendLog } from './arduino'
 
 export const FILE_DIR = SAVE_DIR ?? path.join(__dirname, '../../saved')
 
@@ -26,6 +27,15 @@ export function deleteTrialInfo() {
   } else {
     console.log('File does not exist')
   }
+}
+
+export function saveTrialResults(data: object): void {
+  const dir = FILE_DIR
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir)
+
+  const filePath = path.join(dir, 'trialResults.json')
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
+  sendLog(`Saved results to ${filePath}`)
 }
 
 export function saveTxtLog(message: string) {

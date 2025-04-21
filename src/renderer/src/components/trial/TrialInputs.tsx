@@ -1,8 +1,8 @@
 import { tempTrialInfoAtom } from '@/store'
 import { useImmerAtom } from 'jotai-immer'
 import { X } from 'lucide-react'
+import { VideoSelector } from '../video/VideoSelector'
 import { TopTrialActions } from './TrialActions'
-import { VideoSelector } from './VideoSelector'
 
 export const TrialInputs = () => {
   const [tempTrialInfo, setTempTrialInfo] = useImmerAtom(tempTrialInfoAtom)
