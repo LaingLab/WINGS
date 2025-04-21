@@ -1,4 +1,4 @@
-\*\*\*\*# Use to plan
+# Use to plan
 
 ## Plan
 
@@ -17,9 +17,20 @@
 - [x] Arduino pin editor (UI - key value store)
 - [x] Setup pump/atomizer device
 - [x] Basic Pin Debug View
-- [ ] Results View -- Started
+- [x] Basic Results View
 - [ ] Improve Logging
-- [ ] Serious Refactoring - reusable components
+- [ ] Serious Refactoring
+  - [ ] Backend
+    - [ ] Logger
+    - [ ] File
+    - [ ] Trial
+    - [ ] Arduino
+    - [ ] Video
+    - [ ] IPC Handlers/Preload
+  - [ ] Frontend
+    - [ ] Make Reusable components
+    - [ ] Jotai State Mgmt
+    - [ ] Video saving/loading (w/audio)
 
 ## Notes
 

@@ -65,8 +65,8 @@ const ResultsPage = () => {
 
   return (
     <div className="flex h-screen flex-col p-4">
-      <div className="flex w-full items-center justify-between">
-        <div className="mb-2 flex items-center gap-3">
+      <div className="mb-2 flex w-full items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link
             to="/"
             className="rounded-full bg-white p-1 text-black duration-150 hover:bg-white/50"
@@ -78,7 +78,7 @@ const ResultsPage = () => {
 
         <select
           id="trials-select"
-          className="mb-4 rounded border bg-neutral-800 p-2"
+          className="rounded border bg-neutral-800 p-2"
           onChange={(e) => setSelectedTrial(e.target.value)}
           value={selectedTrial}
         >
