@@ -1,37 +1,37 @@
 import { DebugPage, ResultsPage, TrialPage } from '@/components'
-import { useArduinoListener, useLogListener, useTrial } from '@/hooks'
+import { useArduinoListener, useLogListener } from '@/hooks'
 import { defaultTrialInfo } from '@shared/constants'
 import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Route, BrowserRouter as Router, Routes } from 'react-router'
 
+type TrialList = {
+  id: string
+  name: string
+}
+
 export default function App() {
-  const [trials, setTrials] = useState<string[]>([])
+  const [trials, setTrials] = useState<TrialList[]>([])
 
   useArduinoListener()
   useLogListener()
-  useTrial()
 
   useEffect(() => {
     async function fetchTrials() {
-      window.context.updateFileDir()
-
       await window.context
         .listTrials()
-        .then((trialList: string[]) => setTrials(trialList))
+        .then((trialList: TrialList[]) => setTrials(trialList))
         .catch((err: Error) => console.error(err))
     }
     fetchTrials()
-    return () => window.context.updateFileDir()
   }, [])
 
   const handleCreateTrial = async () => {
-    await window.context.updateFileDir(defaultTrialInfo.name)
-    await window.context.saveTrialInfo(defaultTrialInfo)
+    await window.context.saveTrialInfo({ ...defaultTrialInfo, id: new Date().getTime().toString() })
 
     await window.context
       .listTrials()
-      .then((trialList: string[]) => setTrials(trialList))
+      .then((trialList: TrialList[]) => setTrials(trialList))
       .catch((err: Error) => console.error(err))
   }
 
@@ -50,9 +50,9 @@ export default function App() {
         {trials.length > 0 ? (
           trials.map((trial) => {
             return (
-              <div key={trial} className="flex flex-col items-center justify-center gap-2">
-                <a href={`/trial/${trial}`} className="text-blue-500 hover:underline">
-                  {trial}
+              <div key={trial.id} className="flex flex-col items-center justify-center gap-2">
+                <a href={`/trial/${trial.id}`} className="text-blue-500 hover:underline">
+                  {trial.name}
                 </a>
               </div>
             )
@@ -70,7 +70,7 @@ function ReactRouter({ children }: { children: React.ReactNode }) {
     <Router>
       <Routes>
         <Route path="/" element={children} />
-        <Route path="/trial/:trialId" element={<TrialPage />} />
+        <Route path="/trial/:id" element={<TrialPage />} />
         <Route path="/debug" element={<DebugPage />} />
         <Route path="/results" element={<ResultsPage />} />
       </Routes>

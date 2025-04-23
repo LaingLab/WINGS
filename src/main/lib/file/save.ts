@@ -11,19 +11,20 @@ const fileLog = (text: string, func?: string) => {
 }
 
 export function saveTrialInfo(data: TrialInfo): void {
-  fileLog(`Saving trial info @ ${FILE_DIR}/trialInfo.json`, '.saveTrialInfo')
+  const trialId = data.id
 
-  const dir = FILE_DIR
+  fileLog(`Saving trial info @ ${FILE_DIR}/${trialId}/trialInfo.json`, '.saveTrialInfo')
+
+  const dir = path.join(FILE_DIR, trialId)
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 
-  const trialDir = path.join(dir, data.name)
-  if (dir !== trialDir) {
-    fs.renameSync(dir, trialDir)
-    fileLog(`Renamed directory to ${trialDir}`, '.saveTrialInfo')
+  const newData = {
+    ...data,
+    id: trialId
   }
 
-  const filePath = path.join(trialDir, 'trialInfo.json')
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
+  const filePath = path.join(dir, 'trialInfo.json')
+  fs.writeFileSync(filePath, JSON.stringify(newData, null, 2), 'utf-8')
   console.log(`Saved userData to ${filePath}`)
 }
 

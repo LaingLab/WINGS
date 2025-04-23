@@ -33,10 +33,10 @@ export function updateFileDir(newDir?: string): string {
 }
 
 /**
- * @returns {string[]} - List of trial directories
+ * @returns {{ id: string; name: string }[]} - List of trial directories
  * @description - Lists all filenames / foldernames present in the saved directory.
  */
-export function listFiles(): string[] {
+export function listFiles(): { id: string; name: string }[] {
   fileLog(`Fetching list of trials`, '.listTrials')
 
   if (!fs.existsSync(FILE_DIR)) {
@@ -44,11 +44,26 @@ export function listFiles(): string[] {
     return []
   }
 
+  // Read all files in the directory, if a folder is found, look for the trialInfo.json file and pull the name
   const entries = fs.readdirSync(FILE_DIR, { withFileTypes: true })
-  const cleanEntries = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
-  fileLog(`Found ${cleanEntries.length} trials`, '.listTrials')
 
-  return cleanEntries
+  // Read all trialInfo.json files in the directory and return the id and name
+  const trials = entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      const trialDir = path.join(FILE_DIR, entry.name)
+      const trialInfoPath = path.join(trialDir, 'trialInfo.json')
+
+      if (fs.existsSync(trialInfoPath)) {
+        const trialInfo = JSON.parse(fs.readFileSync(trialInfoPath, 'utf-8'))
+        return { id: trialInfo.id, name: trialInfo.name }
+      }
+      return null
+    })
+    .filter(Boolean)
+    .map((trial) => trial as { id: string; name: string })
+    .sort((a, b) => (a.name > b.name ? 1 : -1))
+  return trials
 }
 
 /**

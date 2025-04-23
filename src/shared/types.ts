@@ -12,7 +12,7 @@ export type DeleteTrialInfo = () => void
 // Trial
 export type RunTrial = (trialInfo: TrialInfo) => void
 export type EndTrial = () => void
-export type ListTrials = () => Promise<string[]>
+export type ListTrials = () => Promise<{ id: string; name: string }[]>
 export type UpdateFileDir = (trialFolder?: string) => any
 
 // Arduino
