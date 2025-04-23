@@ -7,7 +7,7 @@ import {
   deleteTrialInfo,
   endTrial,
   fileExists,
-  listTrials,
+  listFiles,
   log,
   prime,
   readFile,
@@ -91,7 +91,7 @@ const ipcEvents = () => {
   )
   ipcMain.handle('save-trial-info', (_, trialInfo) => saveTrialInfo(trialInfo))
   ipcMain.handle('delete-trial-info', () => deleteTrialInfo())
-  ipcMain.handle('list-trials', () => listTrials())
+  ipcMain.handle('list-trials', () => listFiles())
   ipcMain.handle('update-file-dir', (_, trialFolder: string) => {
     return updateFileDir(trialFolder)
   })

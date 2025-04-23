@@ -41,7 +41,7 @@ export default function App() {
   )
 }
 
-function ReactRouter({ children }) {
+function ReactRouter({ children }: { children: React.ReactNode }) {
   return (
     <Router>
       <Routes>

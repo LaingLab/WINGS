@@ -18,16 +18,17 @@
 - [x] Setup pump/atomizer device
 - [x] Basic Pin Debug View
 - [x] Basic Results View
-- [ ] Improve Logging
+- [x] Improve Logging
 - [ ] Serious Refactoring
   - [ ] Backend
-    - [ ] Logger
-    - [ ] File
+    - [x] Logger
+    - [x] File
     - [ ] Trial
     - [ ] Arduino
     - [ ] Video
     - [ ] IPC Handlers/Preload
   - [ ] Frontend
+    - [ ] Add Home page
     - [ ] Make Reusable components
     - [ ] Jotai State Mgmt
     - [ ] Video saving/loading (w/audio)

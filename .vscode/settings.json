@@ -30,5 +30,19 @@
     "tsconfig.node.json": true,
     "tsconfig.web.json": true
   },
-  "explorerExclude.backup": {}
+  "explorerExclude.backup": {},
+  "github.copilot.enable": {
+    "*": true,
+    "COBOL": true,
+    "COBOLIT": true,
+    "ACUCOBOL": true,
+    "BITLANG-COBOL": true,
+    "RMCOBOL": true,
+    "COBOL_MF_LISTFILE": false,
+    "COBOL_PCOB_LISTFILE": false,
+    "COBOL_ACU_LISTFILE": false,
+    "COBOL_MF_PREP": false,
+    "mfu": false,
+    "utreport": false
+  }
 }
