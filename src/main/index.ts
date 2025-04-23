@@ -8,6 +8,7 @@ import {
   endTrial,
   fileExists,
   listTrials,
+  log,
   prime,
   readFile,
   runTrial,
@@ -63,8 +64,9 @@ app.whenReady().then(() => {
 
   ipcEvents()
   setupVideoHandlers()
-
   createWindow()
+
+  log('App ready', 'Main')
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -74,6 +76,7 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   // Quit when all windows are closed, except on macOS.
   if (process.platform !== 'darwin') {
+    log('App Closed', 'Main')
     app.quit()
   }
 })

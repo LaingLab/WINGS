@@ -1,14 +1,14 @@
 import { mainWindow } from '..'
 import { saveTxtLog } from './file'
 
-export const log = (text: string, type?: string, save?: boolean) => {
+export const log = (text: string, type?: string, send?: boolean) => {
   const prefix = `[${type ?? 'APP'}]`
 
   console.log(prefix, text)
 
-  mainWindow.webContents.send('trial-log', `${text}`)
+  saveTxtLog(`${prefix} ${text}`)
 
-  if (save) {
-    saveTxtLog(`${prefix} ${text}`)
+  if (!send) {
+    mainWindow.webContents.send('trial-log', `${prefix} ${text}`)
   }
 }

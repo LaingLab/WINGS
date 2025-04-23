@@ -1,13 +1,18 @@
 import { ArduinoPin } from '@shared/models'
+import { log } from '../log'
 import { wait } from '../utils'
-import { sendLog, toggleLed, updateInfo } from './'
+import { toggleLed, updateInfo } from './'
 import { PumpController } from './controllers'
+
+const arduinoLog = (text: string) => {
+  log(text, 'Arduino-Event')
+}
 
 export async function realCycle(pins?: ArduinoPin) {
   updateInfo({ status: 'waiting' })
   await wait(1000)
 
-  sendLog('Testing pump #1 (10% speed)')
+  arduinoLog('Testing pump #1 (10% speed)')
   const pump1 = new PumpController(11, 12, 13)
   pump1.start(25)
 
@@ -15,7 +20,7 @@ export async function realCycle(pins?: ArduinoPin) {
 
   pump1.stop()
 
-  sendLog('Testing pump #2 (10% speed)')
+  arduinoLog('Testing pump #2 (10% speed)')
   const pump2 = new PumpController(10, 9, 8)
   pump2.start(25)
 
@@ -24,7 +29,7 @@ export async function realCycle(pins?: ArduinoPin) {
   pump2.stop()
 
   await wait(2000)
-  sendLog('Finished Cycle!')
+  arduinoLog('Finished Cycle!')
   return 1
 }
 
@@ -46,6 +51,6 @@ export async function testCycle() {
   })
 
   await wait(2000)
-  sendLog('Finished Cycle!')
+  arduinoLog('Finished Cycle!')
   return 1
 }

@@ -1,7 +1,12 @@
 import { ArduinoLed, ArduinoPump } from '@shared/models'
 import five from 'johnny-five'
-import { sendLog, updatePin } from './'
+import { log } from '../log'
+import { updatePin } from './'
 import { PumpController } from './controllers'
+
+const arduinoLog = (text: string) => {
+  log(text, 'Arduino-Action')
+}
 
 export async function togglePump({ pins, state, speed }: ArduinoPump) {
   const pump = new PumpController(pins[0], pins[1], pins[2])
@@ -20,14 +25,14 @@ export async function togglePump({ pins, state, speed }: ArduinoPump) {
 }
 
 export async function toggleLed({ state, pin, freq, inputLed, noLog }: ArduinoLed) {
-  noLog ?? sendLog(`Toggling led @ pin ${pin ?? inputLed?.pin} - ${state}`)
+  noLog ?? arduinoLog(`Toggling led @ pin ${pin ?? inputLed?.pin} - ${state}`)
 
   if (!pin && !inputLed) {
-    sendLog('<ERROR> Recieved no pin')
+    arduinoLog('<ERROR> Recieved no pin')
   }
 
   if ((Number(pin) < 0 || Number(pin) > 18) && !inputLed) {
-    sendLog('<ERROR> Pin invalid')
+    arduinoLog('<ERROR> Pin invalid')
   }
 
   const led: five.Led = inputLed ?? new five.Led(Number(pin))

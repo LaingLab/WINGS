@@ -1,25 +1,126 @@
-import { ArduinoPin, TrialEvent } from '@shared/models'
 import { parse } from 'csv-parse/sync'
 import { createObjectCsvWriter } from 'csv-writer'
+
 import fs from 'fs'
 import path from 'path'
 
 import { SAVE_DIR } from '@shared/constants'
-import { sendLog } from './arduino'
+import { ArduinoPin, TrialEvent } from '@shared/models'
+
+import { log } from './log'
 
 export let FILE_DIR = SAVE_DIR ?? path.join(__dirname, '../../saved')
 
+const fileLog = (text: string, func?: string) => {
+  log(text, `File${func ?? ''}`)
+}
+
+// const logsText = readFile('logs', 'txt')
+export function readFile(filename: string, filetype: 'txt' | 'json' | 'jsonl' | 'csv') {
+  fileLog(`Reading file @ ${filename}.${filetype}`, '.readFile')
+
+  const filePath = path.join(FILE_DIR, `${filename}.${filetype}`)
+
+  if (!fs.existsSync(filePath)) {
+    console.error(`File not found: ${filePath}`)
+    return null
+  }
+
+  const content = fs.readFileSync(filePath, 'utf-8')
+
+  switch (filetype) {
+    case 'txt':
+      return content
+
+    case 'json':
+      try {
+        return JSON.parse(content)
+      } catch (err) {
+        console.error('Invalid JSON file:', err)
+        return null
+      }
+
+    case 'jsonl':
+      return content
+        .split('\n')
+        .filter(Boolean)
+        .map((line) => {
+          try {
+            return JSON.parse(line)
+          } catch {
+            return { error: 'Invalid JSON line', line }
+          }
+        })
+
+    case 'csv':
+      try {
+        return parse(content, {
+          columns: true,
+          skip_empty_lines: true
+        })
+      } catch (err) {
+        console.error('Invalid CSV file:', err)
+        return null
+      }
+
+    default:
+      console.warn('Unsupported file type:', filetype)
+      return null
+  }
+}
+
+// const exists = fileExists('myFile.txt');
+export function fileExists(filename) {
+  fileLog(`Checking if file exists @ ${filename}`, '.fileExists')
+
+  const dirPath = FILE_DIR
+
+  if (!fs.existsSync(dirPath)) {
+    fileLog(`ERROR: Directory does not exist`, '.fileExists')
+    return false
+  }
+
+  const filePath = path.join(dirPath, filename)
+
+  if (fs.existsSync(filePath)) {
+    fileLog(`File found!`, '.fileExists')
+    return true
+  }
+
+  fileLog(`ERROR: File not found`, '.fileExists')
+  return false
+}
+
+export function listTrials(): string[] {
+  fileLog(`Fetching list of trials`, '.listTrials')
+
+  if (!fs.existsSync(FILE_DIR)) {
+    fileLog('Saved directory does not exist', '.listTrials')
+    return []
+  }
+
+  const entries = fs.readdirSync(FILE_DIR, { withFileTypes: true })
+  const cleanEntries = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
+  fileLog(`Found ${cleanEntries.length} trials`, '.listTrials')
+
+  return cleanEntries
+}
+
 export function updateFileDir(newDir?: string) {
   if (newDir) {
+    fileLog(`Updating file_dir @ ${newDir}`, '.updateFileDir')
     FILE_DIR = SAVE_DIR ?? path.join(__dirname, `../../saved/${newDir}`)
   } else {
+    fileLog(`Updating file_dir back to origin`, '.updateFileDir')
     FILE_DIR = SAVE_DIR ?? path.join(__dirname, '../../saved')
   }
   return FILE_DIR
 }
 
 export function saveTrialInfo(data: object): void {
-  const dir = SAVE_DIR ?? path.join(__dirname, '../../saved')
+  fileLog(`Saving trial info @ ${FILE_DIR}/trialInfo.json`, '.saveTrialInfo')
+
+  const dir = FILE_DIR
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 
   const filePath = path.join(dir, 'trialInfo.json')
@@ -28,23 +129,24 @@ export function saveTrialInfo(data: object): void {
 }
 
 export function deleteTrialInfo() {
+  fileLog(`Delecting trial info @ ${FILE_DIR}/trialInfo.json`, '.deleteTrialInfo')
   const filePath = path.join(FILE_DIR, 'trialInfo.json')
 
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath)
-    console.log('File deleted successfully')
+    fileLog('File deleted successfully', '.deleteTrialInfo')
   } else {
-    console.log('File does not exist')
+    fileLog('File does not exist', '.deleteTrialInfo')
   }
 }
 
 export function saveTrialResults(data: object): void {
+  fileLog(`Saving trial results @ ${FILE_DIR}/trialResults.json`, '.saveTrialResults')
   const dir = FILE_DIR
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 
   const filePath = path.join(dir, 'trialResults.json')
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
-  sendLog(`Saved results to ${filePath}`)
 }
 
 export function saveTxtLog(message: string) {
@@ -128,83 +230,4 @@ export async function convertToCSV(filename: string, filetype: 'json' | 'jsonl')
   } catch (err) {
     console.error('Failed to convert to CSV:', err)
   }
-}
-
-// const logsText = readFile('logs', 'txt')
-export function readFile(filename: string, filetype: 'txt' | 'json' | 'jsonl' | 'csv') {
-  const filePath = path.join(FILE_DIR, `${filename}.${filetype}`)
-
-  if (!fs.existsSync(filePath)) {
-    console.error(`File not found: ${filePath}`)
-    return null
-  }
-
-  const content = fs.readFileSync(filePath, 'utf-8')
-
-  switch (filetype) {
-    case 'txt':
-      return content
-
-    case 'json':
-      try {
-        return JSON.parse(content)
-      } catch (err) {
-        console.error('Invalid JSON file:', err)
-        return null
-      }
-
-    case 'jsonl':
-      return content
-        .split('\n')
-        .filter(Boolean)
-        .map((line) => {
-          try {
-            return JSON.parse(line)
-          } catch {
-            return { error: 'Invalid JSON line', line }
-          }
-        })
-
-    case 'csv':
-      try {
-        return parse(content, {
-          columns: true,
-          skip_empty_lines: true
-        })
-      } catch (err) {
-        console.error('Invalid CSV file:', err)
-        return null
-      }
-
-    default:
-      console.warn('Unsupported file type:', filetype)
-      return null
-  }
-}
-
-// const exists = fileExists('myFile.txt');
-export function fileExists(filename) {
-  const dirPath = FILE_DIR
-
-  if (!fs.existsSync(dirPath)) {
-    console.log('Directory does not exist')
-    return false
-  }
-
-  const filePath = path.join(dirPath, filename)
-
-  if (fs.existsSync(filePath)) {
-    return true
-  }
-
-  return false
-}
-
-export function listTrials(): string[] {
-  if (!fs.existsSync(FILE_DIR)) {
-    console.error('Saved directory does not exist')
-    return []
-  }
-  const entries = fs.readdirSync(FILE_DIR, { withFileTypes: true })
-  return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
 }

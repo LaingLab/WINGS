@@ -1,22 +1,11 @@
-/** 
-Trial Runtime
-    1. Start trial called
-    2. Initialize devices
-    3. Start recording
-    4. Event loop
-    5. Save data and logs (should be automatic)
-*/
-
 import { TrialInfo } from '@shared/models'
 import { mainWindow } from '..'
+
 import { connect, initBoard } from './arduino'
 import { convertToCSV, updateFileDir } from './file'
-import { log as logFn } from './log'
+import { log } from './log'
 import { wait } from './utils'
 
-const logPrefix = 'Trial'
-
-let running = false
 let duration = 0
 let countInterval
 
@@ -27,30 +16,30 @@ const statusUpdate = (status: string) => {
   mainWindow.webContents.send('trial-info', JSON.stringify(update))
 }
 
+const trialLog = (text: string, func?: string) => {
+  log(text, `Trial${func ?? ''}`)
+}
+
 // Run trial
 export async function runTrial(trialInfo: TrialInfo) {
-  log(`Starting Trial...`)
-  running = true
-
-  // Set Trial Folder to save to
+  trialLog(`Starting trial with info ${JSON.stringify(trialInfo)}`, '.runTrial')
   updateFileDir(`${trialInfo.name}`)
-  log(`Starting trial... ${JSON.stringify(trialInfo)}`)
 
   try {
     await connect(trialInfo.arduinoInfo.path, trialInfo.arduinoInfo.pins)
 
     await initBoard()
   } catch (error) {
-    log('Failed to connect to the board: skipping board initialization.')
+    trialLog('Failed to connect to the board: skipping board initialization.', '.runTrial')
   }
 
   await wait(3000)
 
   // Start Recording
-  log(`Starting video recording...`)
+  trialLog(`Starting video recording...`, '.runTrial')
   mainWindow.webContents.send('video-control', 'start-recording')
 
-  log(`Trial started!`)
+  trialLog(`Trial started!`, '.runTrial')
   statusUpdate('started')
 
   countInterval = setInterval(() => {
@@ -60,39 +49,33 @@ export async function runTrial(trialInfo: TrialInfo) {
 }
 
 export async function endTrial() {
-  log(`Ending trial...`)
+  trialLog(`Ending trial...`, '.endTrial')
 
   clearInterval(countInterval)
   statusUpdate('saving')
 
-  log(`Stopping video recording...`)
+  trialLog(`Stopping video recording...`, '.endTrial')
   mainWindow.webContents.send('video-control', 'stop-recording')
-
-  running = false
 
   await wait(2000)
 
-  log(`Converting data to csv...`)
+  trialLog(`Converting data to csv...`, '.endTrial')
   statusUpdate('cleanup')
   await convertToCSV('sensor_readings', 'jsonl')
 
   await wait(3000)
 
-  log(`Saving results...`)
+  trialLog(`Saving results...`, '.endTrial')
 
   // await saveTrialResults()
 
   await wait(1000)
 
-  log(`Trial ended, ran for ${duration} seconds`)
+  trialLog(`Trial ended, ran for ${duration} seconds`, '.endTrial')
   updateFileDir()
 
   await wait(1000)
 
-  log(`Trial ended.`)
+  trialLog(`Trial ended.`, '.endTrial')
   statusUpdate('stopped')
-}
-
-const log = (m: string) => {
-  logFn(m, logPrefix, true)
 }

@@ -1,8 +1,10 @@
 import five from 'johnny-five'
 
 import { ArduinoPin } from '@shared/models'
+
+import { log } from '../log'
 import { wait } from '../utils'
-import { realCycle, sendEvent, sendLog, updateInfo, updatePin } from './'
+import { realCycle, sendEvent, updateInfo, updatePin } from './'
 
 let primed = false
 let waiting = false
@@ -10,35 +12,39 @@ let waiting = false
 let board: five.Board | null
 let pins: ArduinoPin[]
 
+const arduinoLog = (text: string) => {
+  log(text, 'Arduino')
+}
+
+// Connection Handlers
 export async function connect(pathName?, inputPins?: ArduinoPin[]) {
-  sendLog(`Connect function called`)
+  arduinoLog(`Connect function called`)
 
   await wait(500)
 
   if (board) {
-    sendLog('Removing all connected devices...')
+    arduinoLog('Removing all connected devices...')
     disconnect({ noLog: true })
   }
 
   await wait(500)
 
-  sendLog('Connecting to board...')
+  arduinoLog('Connecting to board...')
   board = new five.Board({
     repl: false,
     port: pathName
   })
   pins = inputPins ?? []
 
-  // wait here until the board truly fires 'ready'
   await new Promise<void>((resolve, reject) => {
     const timeout = setTimeout(() => {
-      sendLog('Could not connect to board within 15 seconds.')
+      arduinoLog('Could not connect to board within 15 seconds.')
       updateInfo({ status: 'error', message: 'Connection timeout' })
       reject(new Error('Timeout connecting to board'))
     }, 15000)
     board?.on('ready', () => {
       clearTimeout(timeout)
-      sendLog(`Board connected @ ${board?.port}`)
+      arduinoLog(`Board connected @ ${board?.port}`)
       updateInfo({ status: 'connected', path: board?.port })
       resolve()
     })
@@ -49,14 +55,28 @@ export async function connect(pathName?, inputPins?: ArduinoPin[]) {
   })
 }
 
+async function disconnect(params?: { noLog: boolean }) {
+  primed = false
+  waiting = false
+
+  board = null
+  pins = []
+
+  if (!params?.noLog) {
+    arduinoLog('Disconnected')
+    updateInfo({ status: 'disconnected' })
+  }
+}
+
+// Initialization Steps
 export async function initBoard() {
   await wait(500)
 
-  sendLog('Initializing board...')
+  arduinoLog('Initializing board...')
 
   if (!board) {
     console.log('No board found')
-    sendLog('Board not found.')
+    arduinoLog('Board not found.')
     return 1
   }
 
@@ -64,11 +84,11 @@ export async function initBoard() {
 
   await wait(1000)
 
-  sendLog('Board initialized')
+  arduinoLog('Board initialized')
 
   await wait(1500)
 
-  sendLog(`Board ready`)
+  arduinoLog(`Board ready`)
 
   return 1
 }
@@ -77,7 +97,7 @@ async function initPins() {
   await wait(500)
 
   pins.map((pin: ArduinoPin) => {
-    sendLog(`Initializing ${pin.type} @ pin ${pin.pin}`)
+    arduinoLog(`Initializing ${pin.type} @ pin ${pin.pin}`)
     if (pin.type == 'sensor') {
       const sensor = new five.Sensor({
         pin: pin.pin,
@@ -103,7 +123,7 @@ async function initPins() {
 
       switchy.on('close', async () => {
         if (!waiting && primed) {
-          sendLog(`Switch closed - ${pin.id}`)
+          arduinoLog(`Switch closed - ${pin.id}`)
           sendEvent({
             name: 'Switch Close',
             type: pin.id,
@@ -131,7 +151,7 @@ async function initPins() {
 
           prime(false)
         } else if (!waiting && !primed) {
-          sendLog('Arduino is not primed, cannot activate switch.')
+          arduinoLog('Arduino is not primed, cannot activate switch.')
           waiting = true
           wait(800).then(() => {
             waiting = false
@@ -153,33 +173,21 @@ async function initPins() {
   return 1
 }
 
+// Actions
 export async function prime(prime = true) {
   if (!primed && prime) {
-    sendLog('Priming...')
+    arduinoLog('Priming...')
     await wait(500)
 
     updateInfo({ primed: true })
     primed = true
     return 'primed'
   } else {
-    sendLog('Unpriming...')
+    arduinoLog('Unpriming...')
     await wait(500)
 
     updateInfo({ primed: false })
     primed = false
     return 'unprimed'
-  }
-}
-
-async function disconnect(params?: { noLog: boolean }) {
-  primed = false
-  waiting = false
-
-  board = null
-  pins = []
-
-  if (!params?.noLog) {
-    sendLog('Disconnected')
-    updateInfo({ status: 'disconnected' })
   }
 }

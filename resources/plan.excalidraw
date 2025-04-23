@@ -1,0 +1,51 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://marketplace.visualstudio.com/items?itemName=pomdtr.excalidraw-editor",
+  "elements": [
+    {
+      "id": "AUoMZS7aFpnOrSIt5QMqm",
+      "type": "text",
+      "x": 327.34375,
+      "y": 103.00781647364283,
+      "width": 504.45953369140625,
+      "height": 400,
+      "angle": 0,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "aH",
+      "roundness": null,
+      "seed": 318272650,
+      "version": 754,
+      "versionNonce": 89641430,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1745424420889,
+      "link": null,
+      "locked": false,
+      "text": "1. Bring user to homepage\n    - [File] get all trials and user prefrences\n2. Create or select a trial\n    - [Logger] Log when user loads/creates a trial\n    - [File] Load specific trial data/make new folder\n3. Set trial settings\n    - [File] Save trial settings to file\n4. Run trial\n    - [Logger] Yep\n    - [Trial] Trial Stuff\n    - [Arduino] Attempt connection\n    - [Video] Start Recording\n    - [Arduino] Listen for events\n5. Collect and view results\n    - [File] Save results to file\n    - [Logger] yep",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "1. Bring user to homepage\n    - [File] get all trials and user prefrences\n2. Create or select a trial\n    - [Logger] Log when user loads/creates a trial\n    - [File] Load specific trial data/make new folder\n3. Set trial settings\n    - [File] Save trial settings to file\n4. Run trial\n    - [Logger] Yep\n    - [Trial] Trial Stuff\n    - [Arduino] Attempt connection\n    - [Video] Start Recording\n    - [Arduino] Listen for events\n5. Collect and view results\n    - [File] Save results to file\n    - [Logger] yep",
+      "autoResize": true,
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "gridSize": 20,
+    "gridStep": 5,
+    "gridModeEnabled": false,
+    "viewBackgroundColor": "#131313"
+  },
+  "files": {}
+}
