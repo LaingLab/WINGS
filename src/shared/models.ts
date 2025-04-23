@@ -1,5 +1,6 @@
 export type TrialInfo = {
-  name?: string
+  id: string
+  name: string
   status: string
   duration?: string
   videoInfo: VideoInfo

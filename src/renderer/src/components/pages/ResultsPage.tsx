@@ -1,14 +1,14 @@
-import { TrialInfo } from '@shared/models'
+import { ArduinoPin, TrialEvent, TrialInfo } from '@shared/models'
 import { ArrowLeft, CameraOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 
-const ResultsPage = () => {
+export const ResultsPage = () => {
   const [trials, setTrials] = useState<string[]>([])
   const [selectedTrial, setSelectedTrial] = useState<string>('')
   const [logs, setLogs] = useState<string>('')
-  const [sensorReadings, setSensorReadings] = useState<any[]>([])
-  const [events, setEvents] = useState<any[]>([])
+  const [sensorReadings, setSensorReadings] = useState<ArduinoPin[]>([])
+  const [events, setEvents] = useState<TrialEvent[]>([])
   const [videoPath, setVideoPath] = useState<string>('')
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const ResultsPage = () => {
       console.log(dir)
 
       const logsText = await window.context.readFile({ filename: 'logs', filetype: 'txt' })
-      if (logsText) setLogs(logsText as any)
+      if (logsText) setLogs(logsText.toString())
 
       const sensorData = await window.context.readFile({
         filename: 'sensor_readings',
@@ -42,13 +42,13 @@ const ResultsPage = () => {
       })
       if (sensorData) {
         console.log('Sensor Data', sensorData)
-        setSensorReadings(sensorData as any[])
+        setSensorReadings(sensorData as ArduinoPin[])
       }
 
       const eventsData = await window.context.readFile({ filename: 'events', filetype: 'jsonl' })
       if (eventsData) {
         console.log('Event Data', eventsData)
-        setEvents(eventsData as any[])
+        setEvents(eventsData as TrialEvent[])
       }
 
       const trialInfo = (await window.context.readFile({

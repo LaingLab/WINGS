@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { ArduinoPin, TrialEvent } from '@shared/models'
+import { ArduinoPin, TrialEvent, TrialInfo } from '@shared/models'
 
 import { log } from '../log'
 import { FILE_DIR } from './file'
@@ -10,13 +10,19 @@ const fileLog = (text: string, func?: string) => {
   log(text, `File-Save${func ?? ''}`)
 }
 
-export function saveTrialInfo(data: object): void {
+export function saveTrialInfo(data: TrialInfo): void {
   fileLog(`Saving trial info @ ${FILE_DIR}/trialInfo.json`, '.saveTrialInfo')
 
   const dir = FILE_DIR
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 
-  const filePath = path.join(dir, 'trialInfo.json')
+  const trialDir = path.join(dir, data.name)
+  if (dir !== trialDir) {
+    fs.renameSync(dir, trialDir)
+    fileLog(`Renamed directory to ${trialDir}`, '.saveTrialInfo')
+  }
+
+  const filePath = path.join(trialDir, 'trialInfo.json')
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
   console.log(`Saved userData to ${filePath}`)
 }

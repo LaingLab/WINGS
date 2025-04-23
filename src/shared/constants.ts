@@ -4,7 +4,8 @@ import { TrialInfo } from './models'
 export const SAVE_DIR = null
 
 export const defaultTrialInfo: TrialInfo = {
-  name: '',
+  id: '',
+  name: 'New-Trial',
   status: 'setup',
   duration: '',
   videoInfo: {
