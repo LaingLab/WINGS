@@ -1,8 +1,8 @@
+import { TrialLogArea } from '@/components'
 import { trialInfoAtom } from '@renderer/store'
 import { useImmerAtom } from 'jotai-immer'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router'
-import { TrialLogArea } from '../trial/TrialLogArea'
 
 export const DebugPage = () => {
   const [trialInfo, setTrialInfo] = useImmerAtom(trialInfoAtom)

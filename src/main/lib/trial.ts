@@ -23,7 +23,7 @@ const trialLog = (text: string, func?: string) => {
 // Run trial
 export async function runTrial(trialInfo: TrialInfo) {
   trialLog(`Starting trial with info ${JSON.stringify(trialInfo)}`, '.runTrial')
-  updateFileDir(`${trialInfo.name}`)
+  updateFileDir(`${trialInfo.id}`)
 
   try {
     await connect(trialInfo.arduinoInfo.path, trialInfo.arduinoInfo.pins)

@@ -17,7 +17,7 @@ export function useTrial() {
       if (trialInfoExists) {
         console.log('Found trial info! Loading...')
         const trialInfo = await window.context.readFile({
-          filename: `${id}/trialInfo.json`,
+          filename: `${id}/trialInfo`,
           filetype: 'json'
         })
 

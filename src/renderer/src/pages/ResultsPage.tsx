@@ -3,8 +3,13 @@ import { ArrowLeft, CameraOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 
+type TrialList = {
+  id: string
+  name: string
+}
+
 export const ResultsPage = () => {
-  const [trials, setTrials] = useState<string[]>([])
+  const [trials, setTrials] = useState<TrialList[]>([])
   const [selectedTrial, setSelectedTrial] = useState<string>('')
   const [logs, setLogs] = useState<string>('')
   const [sensorReadings, setSensorReadings] = useState<ArduinoPin[]>([])
@@ -17,7 +22,7 @@ export const ResultsPage = () => {
 
       await window.context
         .listTrials()
-        .then((trialList: string[]) => setTrials(trialList))
+        .then((trialList: TrialList[]) => setTrials(trialList))
         .catch((err: Error) => console.error(err))
     }
     fetchTrials()
@@ -28,7 +33,7 @@ export const ResultsPage = () => {
     if (!selectedTrial) return
 
     async function fetchInfo() {
-      const dir = await window.context.updateFileDir(selectedTrial)
+      const dir = await window.context.updateFileDir(`${selectedTrial}`)
 
       setVideoPath(`${dir}/video.webm`)
       console.log(dir)
@@ -68,7 +73,7 @@ export const ResultsPage = () => {
       <div className="mb-2 flex w-full items-center gap-4">
         <div className="flex items-center gap-3">
           <Link
-            to="/"
+            to={'/'}
             className="rounded-full bg-white p-1 text-black duration-150 hover:bg-white/50"
           >
             <ArrowLeft size={22} />
@@ -84,8 +89,8 @@ export const ResultsPage = () => {
         >
           <option value="">-- Select a trial --</option>
           {trials.map((trial) => (
-            <option key={trial} value={trial}>
-              {trial}
+            <option key={trial.id} value={trial.id}>
+              {trial.name}
             </option>
           ))}
         </select>

@@ -77,7 +77,7 @@ export function setupVideoHandlers() {
 
         return new Promise((resolve, reject) => {
           ffmpeg(recording.tempFilePath)
-            .outputOptions('-c:v libx264') // H.264 codec
+            .outputOptions('-c:v libx264')
             .output(recording.finalFilePath)
             .on('end', () => {
               console.log('Conversion finished')

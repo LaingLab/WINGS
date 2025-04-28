@@ -10,8 +10,13 @@ import {
   TrialLogArea,
   VideoInfoArea
 } from '@/components'
+import { useArduinoListener, useLogListener, useTrial } from '@renderer/hooks'
 
 export const TrialPage = () => {
+  useArduinoListener()
+  useLogListener()
+  useTrial()
+
   return (
     <RootLayout>
       <Sidebar className="flex flex-col bg-neutral-900 p-2">

@@ -41,7 +41,7 @@ export async function connect(pathName?, inputPins?: ArduinoPin[]) {
       arduinoLog('Could not connect to board within 15 seconds.')
       updateInfo({ status: 'error', message: 'Connection timeout' })
       reject(new Error('Timeout connecting to board'))
-    }, 15000)
+    }, 10000)
     board?.on('ready', () => {
       clearTimeout(timeout)
       arduinoLog(`Board connected @ ${board?.port}`)

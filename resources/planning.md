@@ -28,9 +28,10 @@
     - [ ] Video
     - [ ] IPC Handlers/Preload
   - [ ] Frontend
-    - [ ] Add Home page
-    - [ ] Make Reusable components
+    - [x] Add Home page
+    - [ ] Trial states
     - [ ] Jotai State Mgmt
+    - [ ] Make Reusable components
     - [ ] Video saving/loading (w/audio)
 
 ## Notes
