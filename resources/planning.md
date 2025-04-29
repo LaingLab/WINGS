@@ -19,20 +19,13 @@
 - [x] Basic Pin Debug View
 - [x] Basic Results View
 - [x] Improve Logging
-- [ ] Serious Refactoring
-  - [ ] Backend
-    - [x] Logger
-    - [x] File
-    - [ ] Trial
-    - [ ] Arduino
-    - [ ] Video
-    - [ ] IPC Handlers/Preload
-  - [ ] Frontend
-    - [x] Add Home page
-    - [ ] Trial states
-    - [ ] Jotai State Mgmt
-    - [ ] Make Reusable components
-    - [ ] Video saving/loading (w/audio)
+- [ ] Adjust models for better data handling (new branch)
+- [ ] Frontend Refactoring
+  - [x] Add Home page
+  - [ ] Trial states
+  - [ ] Jotai State Mgmt
+  - [ ] Make Reusable components
+  - [ ] Video saving/loading (w/audio)
 
 ## Notes
 
