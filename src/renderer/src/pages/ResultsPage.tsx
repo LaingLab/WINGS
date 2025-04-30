@@ -1,4 +1,4 @@
-import { ArduinoPin, TrialEvent, TrialInfo } from '@shared/models'
+import { ArduinoPin, Event, TrialResults } from '@shared/models'
 import { ArrowLeft, CameraOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
@@ -13,7 +13,7 @@ export const ResultsPage = () => {
   const [selectedTrial, setSelectedTrial] = useState<string>('')
   const [logs, setLogs] = useState<string>('')
   const [sensorReadings, setSensorReadings] = useState<ArduinoPin[]>([])
-  const [events, setEvents] = useState<TrialEvent[]>([])
+  const [events, setEvents] = useState<Event[]>([])
   const [videoPath, setVideoPath] = useState<string>('')
 
   useEffect(() => {
@@ -53,15 +53,21 @@ export const ResultsPage = () => {
       const eventsData = await window.context.readFile({ filename: 'events', filetype: 'jsonl' })
       if (eventsData) {
         console.log('Event Data', eventsData)
-        setEvents(eventsData as TrialEvent[])
+        setEvents(eventsData as Event[])
       }
 
-      const trialInfo = (await window.context.readFile({
-        filename: 'trialInfo',
+      const trialResults = (await window.context.readFile({
+        filename: 'trialResults',
         filetype: 'json'
-      })) as TrialInfo
-      if (trialInfo && trialInfo.videoInfo?.fileName) {
-        const vPath = trialInfo.videoInfo.fileName
+      })) as TrialResults
+      if (trialResults && trialResults.trialData.videoPath) {
+        const vPath = trialResults.trialData.videoPath
+        console.log('Video Path', vPath)
+
+        // file:///home/labian/Documents/WINGS/saved/v3ef8wnf4lk/recording-1746052219187.webm
+
+        // file:///home/labian/Documents/WINGS/saved/v3ef8wnf4lk/temp-1746052219187.webm
+
         setVideoPath(vPath)
       }
     }
@@ -145,7 +151,7 @@ export const ResultsPage = () => {
               <h2 className="text-xl font-semibold">Events</h2>
               {events?.map((ev, index) => (
                 <div key={index} className="border-b py-1">
-                  <strong>{ev.time}</strong> - {ev.name} ({ev.type})
+                  <strong>{ev.time}</strong> - {ev.data} ({ev.type})
                 </div>
               ))}
             </div>

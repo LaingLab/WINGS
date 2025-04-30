@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { ArduinoPin, TrialEvent, TrialInfo } from '@shared/models'
+import { ArduinoPin, Event, TrialInfo, TrialResults } from '@shared/models'
 
 import { log } from '../log'
 import { FILE_DIR } from './file'
@@ -28,6 +28,24 @@ export function saveTrialInfo(data: TrialInfo): void {
   console.log(`Saved userData to ${filePath}`)
 }
 
+export function saveTrialResults(data: TrialResults): void {
+  const trialId = data.id
+
+  fileLog(`Saving trial results @ ${FILE_DIR}/${trialId}/trialResults.json`, '.saveTrialResults')
+
+  const dir = FILE_DIR.split('/').pop() === trialId ? FILE_DIR : path.join(FILE_DIR, trialId)
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir)
+
+  const newData = {
+    ...data,
+    id: trialId
+  }
+
+  const filePath = path.join(dir, 'trialResults.json')
+  fs.writeFileSync(filePath, JSON.stringify(newData, null, 2), 'utf-8')
+  console.log(`Saved trial results to ${filePath}`)
+}
+
 export function deleteTrialInfo() {
   fileLog(`Delecting trial info @ ${FILE_DIR}/trialInfo.json`, '.deleteTrialInfo')
   const filePath = path.join(FILE_DIR, 'trialInfo.json')
@@ -38,15 +56,6 @@ export function deleteTrialInfo() {
   } else {
     fileLog('File does not exist', '.deleteTrialInfo')
   }
-}
-
-export function saveTrialResults(data: object): void {
-  fileLog(`Saving trial results @ ${FILE_DIR}/trialResults.json`, '.saveTrialResults')
-  const dir = FILE_DIR
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir)
-
-  const filePath = path.join(dir, 'trialResults.json')
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
 }
 
 export function saveTxtLog(message: string) {
@@ -74,7 +83,7 @@ export function saveSensorReading(sensorData: ArduinoPin) {
   fs.appendFileSync(filePath, JSON.stringify(entry) + '\n', 'utf-8')
 }
 
-export function saveEvent(eventData: TrialEvent) {
+export function saveEvent(eventData: Event) {
   const dir = FILE_DIR
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 

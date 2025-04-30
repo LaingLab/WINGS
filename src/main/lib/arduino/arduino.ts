@@ -101,18 +101,17 @@ async function initPins() {
     if (pin.type == 'sensor') {
       const sensor = new five.Sensor({
         pin: pin.pin,
-        freq: pin.options?.freq ?? 250,
-        threshold: pin.options?.threshold ?? 5
+        freq: pin.opts?.frequency ?? 250,
+        threshold: pin.opts?.threshold ?? 5
       })
 
       sensor.on('data', (value) => {
         if (value) {
           const sensorData: ArduinoPin = {
-            id: `sensor-${pin.pin}`,
             pin: pin.pin,
             type: 'sensor',
             value: String(value),
-            options: { ...pin.options }
+            opts: { ...pin.opts }
           }
           updatePin(JSON.stringify(sensorData))
         }
@@ -123,18 +122,17 @@ async function initPins() {
 
       switchy.on('close', async () => {
         if (!waiting && primed) {
-          arduinoLog(`Switch closed - ${pin.id}`)
+          arduinoLog(`Switch closed - ${pin.pin}`)
           sendEvent({
             name: 'Switch Close',
-            type: pin.id,
+            type: pin.pin,
             time: new Date().toLocaleTimeString()
           })
           updatePin(null, {
-            id: `switch-${pin.pin}`,
             pin: pin.pin,
             type: 'switch',
             value: 'closed',
-            options: { ...pin.options }
+            opts: { ...pin.opts }
           })
 
           waiting = true
@@ -142,11 +140,10 @@ async function initPins() {
           waiting = false
 
           updatePin(null, {
-            id: `switch-${pin.pin}`,
             pin: pin.pin,
             type: 'switch',
             value: 'open',
-            options: { ...pin.options }
+            opts: { ...pin.opts }
           })
 
           prime(false)
@@ -161,11 +158,10 @@ async function initPins() {
     }
     if (pin.type == 'led') {
       updatePin(null, {
-        id: `led-${pin.pin}`,
         pin: pin.pin,
         type: 'led',
         value: pin.value,
-        options: { ...pin.options }
+        opts: { ...pin.opts }
       })
     }
   })

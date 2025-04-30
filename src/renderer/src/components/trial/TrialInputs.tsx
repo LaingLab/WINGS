@@ -9,7 +9,7 @@ export const TrialInputs = () => {
 
   const handleAddPin = () => {
     setTempTrialInfo((draft) => {
-      draft.arduinoInfo.pins.push({ id: 'led-13', pin: '13', type: 'led', value: 'off' })
+      draft.settings.arduino.pins.push({ pin: '13', type: 'led', value: 'off' })
     })
   }
 
@@ -35,16 +35,6 @@ export const TrialInputs = () => {
 
         {/* Video Info */}
         <div className="space-y-1">
-          <input
-            type="text"
-            placeholder="Video Filename"
-            value={tempTrialInfo.videoInfo.fileName}
-            onChange={(e) =>
-              setTempTrialInfo((draft) => {
-                draft.videoInfo.fileName = e.target.value
-              })
-            }
-          />
           <VideoSelector />
           {/* <button type="button">Choose Output Folder</button> */}
         </div>
@@ -54,10 +44,10 @@ export const TrialInputs = () => {
           <input
             type="text"
             placeholder="Arduino Path"
-            value={tempTrialInfo.arduinoInfo.path}
+            value={tempTrialInfo.settings.arduino.path}
             onChange={(e) =>
               setTempTrialInfo((draft) => {
-                draft.arduinoInfo.path = e.target.value
+                draft.settings.arduino.path = e.target.value
               })
             }
           />
@@ -76,13 +66,13 @@ export const TrialInputs = () => {
         {/* Arduino Pins */}
         <div className="space-y-1">
           <button onClick={handleAddPin}>Add Pin</button>
-          {tempTrialInfo.arduinoInfo.pins.map((pin, i) => (
+          {tempTrialInfo.settings.arduino.pins.map((pin, i) => (
             <div key={i} className="flex gap-1">
               <button
                 className="flex items-center justify-center"
                 onClick={() =>
                   setTempTrialInfo((draft) => {
-                    draft.arduinoInfo.pins.splice(i, 1)
+                    draft.settings.arduino.pins.splice(i, 1)
                   })
                 }
               >
@@ -93,7 +83,7 @@ export const TrialInputs = () => {
                 value={pin.type}
                 onChange={(e) =>
                   setTempTrialInfo((draft) => {
-                    draft.arduinoInfo.pins[i].type = e.target.value
+                    draft.settings.arduino.pins[i].type = e.target.value
                   })
                 }
               >
@@ -108,7 +98,7 @@ export const TrialInputs = () => {
                 value={pin.pin}
                 onChange={(e) =>
                   setTempTrialInfo((draft) => {
-                    draft.arduinoInfo.pins[i].pin = e.target.value
+                    draft.settings.arduino.pins[i].pin = e.target.value
                   })
                 }
               />
@@ -118,7 +108,7 @@ export const TrialInputs = () => {
                 value={pin.value}
                 onChange={(e) =>
                   setTempTrialInfo((draft) => {
-                    draft.arduinoInfo.pins[i].value = e.target.value
+                    draft.settings.arduino.pins[i].value = e.target.value
                   })
                 }
               />

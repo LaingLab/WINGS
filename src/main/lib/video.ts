@@ -11,15 +11,16 @@ ffmpeg.setFfmpegPath(ffmpegPath.path)
 const activeRecordings = new Map()
 
 export function setupVideoHandlers() {
-  ipcMain.handle('video:start-recording', (_, { fileName, outputFolder, format = 'webm' }) => {
+  ipcMain.handle('video:start-recording', () => {
     try {
-      const outputDirectory = outputFolder || FILE_DIR
+      const outputDirectory = FILE_DIR
 
       if (!fs.existsSync(outputDirectory)) {
         fs.mkdirSync(outputDirectory, { recursive: true })
       }
 
-      const actualFileName = fileName || `recording-${Date.now()}`
+      const actualFileName = `temp-${Date.now()}`
+      const format = 'webm'
       const finalFilePath = path.join(
         outputDirectory,
         actualFileName.includes(`.${format}`) ? actualFileName : `${actualFileName}.${format}`

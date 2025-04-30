@@ -19,11 +19,12 @@
 - [x] Basic Pin Debug View
 - [x] Basic Results View
 - [x] Improve Logging
-- [ ] Adjust models for better data handling (new branch)
-- [ ] Frontend Refactoring
+- [x] Adjust models for better data handling (new branch)
+- [ ] Refactoring
   - [x] Add Home page
-  - [ ] Trial states
-  - [ ] Jotai State Mgmt
+  - [x] Trial states
+  - [x] Jotai State Mgmt
+  - [ ] Backend mgmt
   - [ ] Make Reusable components
   - [ ] Video saving/loading (w/audio)
 

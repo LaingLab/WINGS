@@ -1,8 +1,8 @@
-import { eventInfoAtom } from '@/store'
+import { trialDataAtom } from '@/store'
 import { useAtomValue } from 'jotai'
 
 export const EventInfoArea = () => {
-  const eventInfo = useAtomValue(eventInfoAtom)
+  const { events: eventInfo } = useAtomValue(trialDataAtom)
 
   return (
     <div className="flex-grow border-l border-white/20 p-3 pr-0">
@@ -14,7 +14,7 @@ export const EventInfoArea = () => {
               key={`${event.type}+${i}`}
               className="flex w-full flex-col justify-between rounded-xl border border-white/10 bg-neutral-900/50 p-2"
             >
-              <p>{event.name}</p>
+              <p>{event.data}</p>
               <p className="text-white/50">{event.time}</p>
             </div>
           ))}

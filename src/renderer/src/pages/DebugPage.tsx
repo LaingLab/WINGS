@@ -1,11 +1,11 @@
 import { TrialLogArea } from '@/components'
-import { trialInfoAtom } from '@renderer/store'
-import { useImmerAtom } from 'jotai-immer'
+import { trialDataAtom } from '@renderer/store'
+import { useAtomValue } from 'jotai'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router'
 
 export const DebugPage = () => {
-  const [trialInfo, setTrialInfo] = useImmerAtom(trialInfoAtom)
+  const trialData = useAtomValue(trialDataAtom)
 
   const toggleLed = (pin: number, state: string) => {
     window.context.toggleLed({
@@ -38,10 +38,10 @@ export const DebugPage = () => {
           <button className="btn w-40" onClick={() => window.context.arduinoConnect()}>
             Connect
           </button>
-          <p>Status: {trialInfo.arduinoInfo.status}</p>
+          <p>Status: {trialData.arduinoData.status}</p>
         </div>
         <div className="space-y-1">
-          {trialInfo.arduinoInfo.pins.map((pin, i) => (
+          {trialData.arduinoData.pins.map((pin, i) => (
             <div key={i} className="flex w-100 justify-between gap-1">
               <div className="flex gap-1">
                 <p className="input w-24 bg-neutral-800">{pin.type}</p>

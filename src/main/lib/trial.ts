@@ -1,8 +1,8 @@
-import { TrialInfo } from '@shared/models'
+import { TrialInfo, TrialResults } from '@shared/models'
 import { mainWindow } from '..'
 
 import { connect, initBoard } from './arduino'
-import { convertToCSV, updateFileDir } from './file'
+import { convertToCSV, saveTrialResults, updateFileDir } from './file'
 import { log } from './log'
 import { wait } from './utils'
 
@@ -26,7 +26,7 @@ export async function runTrial(trialInfo: TrialInfo) {
   updateFileDir(`${trialInfo.id}`)
 
   try {
-    await connect(trialInfo.arduinoInfo.path, trialInfo.arduinoInfo.pins)
+    await connect(trialInfo.settings.arduino.path, trialInfo.settings.arduino.pins)
 
     await initBoard()
   } catch (error) {
@@ -48,7 +48,7 @@ export async function runTrial(trialInfo: TrialInfo) {
   }, 1000)
 }
 
-export async function endTrial() {
+export async function endTrial(trialResults: TrialResults) {
   trialLog(`Ending trial...`, '.endTrial')
 
   clearInterval(countInterval)
@@ -67,7 +67,7 @@ export async function endTrial() {
 
   trialLog(`Saving results...`, '.endTrial')
 
-  // await saveTrialResults()
+  await saveTrialResults(trialResults)
 
   await wait(1000)
 

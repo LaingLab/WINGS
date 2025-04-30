@@ -1,20 +1,20 @@
-import { tempTrialInfoAtom, trialInfoAtom } from '@/store'
+import { trialDataAtom } from '@/store'
 import { ArduinoPin } from '@shared/models'
 import { useImmerAtom } from 'jotai-immer'
 import { useEffect } from 'react'
 
 export function useArduinoListener() {
-  const [_, setTrialInfo] = useImmerAtom(trialInfoAtom)
-  const [__, setTempTrialInfo] = useImmerAtom(tempTrialInfoAtom)
+  const [_, setTrialData] = useImmerAtom(trialDataAtom)
 
   useEffect(() => {
     const unsub = window.context.onArduinoPinUpdate((data: string) => {
       try {
         const parsed: ArduinoPin = JSON.parse(data)
+        console.log('Pin update recieved: ', parsed)
 
-        setTrialInfo((draft) => {
-          const pins = draft.arduinoInfo.pins
-          draft.arduinoInfo.pins[pins.findIndex((pin) => pin.pin == parsed.pin)] = parsed
+        setTrialData((draft) => {
+          const pins = draft.arduinoData.pins
+          draft.arduinoData.pins[pins.findIndex((pin) => pin.pin == parsed.pin)] = parsed
         })
       } catch (err) {
         console.error('Invalid Arduino sensor JSON:', data, err)
@@ -22,20 +22,21 @@ export function useArduinoListener() {
     })
 
     return () => unsub
-  }, [setTrialInfo])
+  }, [setTrialData])
 
   useEffect(() => {
     const unsub = window.context.onArduinoInfo((data: string) => {
       try {
         const parsed = JSON.parse(data)
+        console.log('Info recieved: ', parsed)
 
-        setTrialInfo((prev) => {
-          const arduinoInfo = {
-            ...prev.arduinoInfo,
+        setTrialData((prev) => {
+          const arduinoData = {
+            ...prev.arduinoData,
             ...parsed
           }
 
-          return { ...prev, arduinoInfo }
+          return { ...prev, arduinoData }
         })
       } catch (err) {
         console.error('Invalid Arduino Info JSON:', data, err)
@@ -43,20 +44,18 @@ export function useArduinoListener() {
     })
 
     return () => unsub
-  }, [setTrialInfo])
+  }, [setTrialData])
 
   useEffect(() => {
     const unsub = window.context.onArduinoEvent((data: string) => {
       try {
         const event = JSON.parse(data)
-        console.log('event recieved: ', event)
+        console.log('Event recieved: ', event)
 
-        setTrialInfo((prev) => {
+        setTrialData((prev) => {
           return {
             ...prev,
-            data: {
-              events: [event, ...(prev.data?.events || [])]
-            }
+            events: [event, ...(prev.events || [])]
           }
         })
       } catch (err) {
@@ -65,5 +64,5 @@ export function useArduinoListener() {
     })
 
     return () => unsub
-  }, [setTrialInfo])
+  }, [setTrialData])
 }

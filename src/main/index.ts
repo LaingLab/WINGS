@@ -13,6 +13,7 @@ import {
   readFile,
   runTrial,
   saveTrialInfo,
+  saveTrialResults,
   setupVideoHandlers,
   toggleLed,
   togglePump,
@@ -90,6 +91,7 @@ const ipcEvents = () => {
       readFile(params.filename, params.filetype)
   )
   ipcMain.handle('save-trial-info', (_, trialInfo) => saveTrialInfo(trialInfo))
+  ipcMain.handle('save-trial-results', (_, trialResults) => saveTrialResults(trialResults))
   ipcMain.handle('delete-trial-info', () => deleteTrialInfo())
   ipcMain.handle('list-trials', () => listFiles())
   ipcMain.handle('update-file-dir', (_, trialFolder: string) => {
@@ -98,7 +100,7 @@ const ipcEvents = () => {
 
   // Trial
   ipcMain.handle('run-trial', (_, trialInfo) => runTrial(trialInfo))
-  ipcMain.handle('end-trial', () => endTrial())
+  ipcMain.handle('end-trial', (_, trialResults) => endTrial(trialResults))
 
   // Arduino
   ipcMain.handle('arduino-connect', () => connect())

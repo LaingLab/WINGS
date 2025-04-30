@@ -14,6 +14,7 @@ import {
   ReadFile,
   RunTrial,
   SaveTrialInfo,
+  SaveTrialResults,
   ToggleLed,
   TogglePump,
   UpdateFileDir
@@ -26,6 +27,7 @@ declare global {
       fileExists: FileExists
       readFile: ReadFile
       saveTrialInfo: SaveTrialInfo
+      saveTrialResults: SaveTrialResults
       deleteTrialInfo: DeleteTrialInfo
       listTrials: ListTrials
       updateFileDir: UpdateFileDir

@@ -1,9 +1,10 @@
-import { arduinoInfoAtom } from '@/store'
+import { trialDataAtom, trialSettingsAtom } from '@/store'
 import { useAtomValue } from 'jotai'
 import { twMerge } from 'tailwind-merge'
 
 export const ArduinoInfoArea = () => {
-  const arduinoInfo = useAtomValue(arduinoInfoAtom)
+  const { arduinoData } = useAtomValue(trialDataAtom)
+  const { arduino: arduinoInfo } = useAtomValue(trialSettingsAtom)
 
   return (
     <div className="flex justify-between gap-4 p-3">
@@ -12,11 +13,11 @@ export const ArduinoInfoArea = () => {
         <p className="font-semibold">Arduino</p>
 
         <p className="text-sm">
-          <span className="text-white/30">Status:</span> {arduinoInfo.status}
+          <span className="text-white/30">Status:</span> {arduinoData.status}
         </p>
         <p className="text-sm">
           <span className="text-white/30">Primed:</span>{' '}
-          {arduinoInfo.primed ? 'primed' : 'unprimed'}
+          {arduinoData.primed ? 'primed' : 'unprimed'}
         </p>
         <p className="text-sm">
           <span className="mb-1 text-white/30">Path:</span> {arduinoInfo.path || 'n/a'}
@@ -27,7 +28,7 @@ export const ArduinoInfoArea = () => {
       <div className="w-fit">
         <p className="font-semibold">Pins</p>
         <div className="flex flex-wrap gap-1">
-          {arduinoInfo.pins.map((pin) => (
+          {arduinoData.pins.map((pin) => (
             <div
               key={pin.pin}
               className="rounded-xl border border-white/10 bg-neutral-900/50 p-2 text-center"

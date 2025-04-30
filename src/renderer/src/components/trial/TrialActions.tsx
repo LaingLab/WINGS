@@ -1,4 +1,4 @@
-import { tempTrialInfoAtom, trialInfoAtom } from '@/store'
+import { tempTrialInfoAtom, trialDataAtom, trialInfoAtom } from '@/store'
 import { defaultTrialInfo } from '@shared/constants'
 import { useAtom, useAtomValue } from 'jotai'
 import { ChartSpline, Cog, Home, RefreshCcwDot, Save } from 'lucide-react'
@@ -10,19 +10,16 @@ export const TopTrialActions = () => {
   const [tempTrialInfo, setTempTrialInfo] = useAtom(tempTrialInfoAtom)
 
   const onSubmit = async () => {
-    await setTrialInfo(tempTrialInfo)
-    console.log(tempTrialInfo)
-
-    if (tempTrialInfo === defaultTrialInfo) {
-      window.context.deleteTrialInfo()
-    } else {
-      console.log('Saving trial info to file...')
-      window.context.saveTrialInfo(tempTrialInfo)
-    }
+    setTrialInfo(tempTrialInfo)
+    console.log('Saving trial info to file...', tempTrialInfo)
+    window.context.saveTrialInfo(tempTrialInfo)
   }
 
   const onReset = () => {
-    setTempTrialInfo(defaultTrialInfo)
+    setTempTrialInfo({
+      ...defaultTrialInfo,
+      id: trialInfo.id
+    })
   }
 
   const canSave = trialInfo !== tempTrialInfo
@@ -78,6 +75,7 @@ export const TopTrialActions = () => {
 
 export const BottomTrialActions = () => {
   const trialInfo = useAtomValue(trialInfoAtom)
+  const trialData = useAtomValue(trialDataAtom)
 
   const handleRun = () => {
     console.log('Running Trial...', trialInfo)
@@ -86,7 +84,12 @@ export const BottomTrialActions = () => {
 
   const handleEnd = () => {
     console.log('Ending Trial...')
-    window.context.endTrial()
+    window.context.endTrial({
+      id: trialInfo.id,
+      endTime: new Date().toISOString(),
+      trialInfo: trialInfo,
+      trialData: trialData
+    })
   }
 
   return (

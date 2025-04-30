@@ -29,7 +29,7 @@ export function useTrial() {
       }
     }
     fetchTrialInfo()
-  }, [setTrialInfo, setTempTrialInfo])
+  }, [id, setTrialInfo, setTempTrialInfo])
 
   useEffect(() => {
     const unsub = window.context.onTrialInfo((data: string) => {

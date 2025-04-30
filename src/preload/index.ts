@@ -10,13 +10,14 @@ try {
     fileExists: (filename) => ipcInvoke('file-exists', filename),
     readFile: (params: { filename; filetype }) => ipcInvoke('read-file', params),
     saveTrialInfo: (trialInfo) => ipcInvoke('save-trial-info', trialInfo),
+    saveTrialResults: (trialResults) => ipcInvoke('save-trial-results', trialResults),
     deleteTrialInfo: () => ipcInvoke('delete-trial-info'),
     listTrials: () => ipcInvoke('list-trials'),
     updateFileDir: (trialFolder: string) => ipcInvoke('update-file-dir', trialFolder),
 
     // Trial
     runTrial: (trialInfo) => ipcInvoke('run-trial', trialInfo),
-    endTrial: () => ipcInvoke('end-trial'),
+    endTrial: (trialResults) => ipcInvoke('end-trial', trialResults),
 
     // Arduino
     arduinoConnect: () => ipcInvoke('arduino-connect'),
@@ -25,7 +26,7 @@ try {
     togglePump: (params) => ipcInvoke('toggle-pump', params),
 
     // Video
-    startRecording: (options) => ipcInvoke('video:start-recording', options),
+    startRecording: () => ipcInvoke('video:start-recording'),
     writeVideoChunk: (data) => ipcInvoke('video:write-chunk', data),
     stopRecording: (id) => ipcInvoke('video:stop-recording', id),
 

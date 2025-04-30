@@ -1,31 +1,31 @@
-import { defaultTrialInfo } from '@shared/constants'
-import { ArduinoInfo, TrialEvent, TrialInfo, TrialLog } from '@shared/models'
+import { defaultTrialData, defaultTrialInfo } from '@shared/constants'
+import { TrialData, TrialInfo, TrialResults } from '@shared/models'
 import { atom } from 'jotai'
 
 // Trial Atoms
 export const trialInfoAtom = atom<TrialInfo>(defaultTrialInfo)
 export const tempTrialInfoAtom = atom<TrialInfo>(defaultTrialInfo)
-export const trialLogsAtom = atom<TrialLog[]>([
-  { data: 'Welcome! Run a trial to collect some logs...', time: new Date().toLocaleTimeString() }
-])
+export const trialSettingsAtom = atom<TrialInfo['settings']>((get) => {
+  const trialInfo = get(trialInfoAtom)
+  return trialInfo.settings
+})
+
+// Trial Data Atoms
+export const trialDataAtom = atom<TrialData>(defaultTrialData)
+
+// Trial Results Atoms
+export const trialResultsAtom = atom<TrialResults>((get) => {
+  const trialData = get(trialDataAtom)
+  const trialInfo = get(trialInfoAtom)
+  return {
+    id: trialData.id,
+    endTime: new Date().toISOString(),
+    trialInfo: trialInfo,
+    trialData: trialData
+  }
+})
 
 // Video Atoms
 export const isRecordingAtom = atom(false)
 export const outputPathAtom = atom(null)
 export const selectedMediaDeviceAtom = atom<string | null>(null)
-
-// Event Atoms
-export const eventInfoAtom = atom<TrialEvent[] | null>((get) => {
-  const trialInfo = get(trialInfoAtom)
-  const eventInfo = trialInfo.data?.events
-
-  return eventInfo ?? []
-})
-
-// Arduino Atoms
-export const arduinoInfoAtom = atom<ArduinoInfo>((get) => {
-  const trialInfo = get(trialInfoAtom)
-  const arduinoInfo = trialInfo.arduinoInfo
-
-  return arduinoInfo
-})

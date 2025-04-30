@@ -21,7 +21,12 @@ export function HomePage() {
   }, [])
 
   const handleCreateTrial = async () => {
-    await window.context.saveTrialInfo({ ...defaultTrialInfo, id: new Date().getTime().toString() })
+    await window.context.saveTrialInfo({
+      ...defaultTrialInfo,
+      id: Math.random().toString(36).substring(2, 15),
+      dateCreated: new Date().toISOString(),
+      lastOpened: new Date().toISOString()
+    })
 
     await window.context
       .listTrials()
@@ -45,7 +50,7 @@ export function HomePage() {
           return (
             <div key={trial.id} className="flex flex-col items-center justify-center gap-2">
               <a href={`/trial/${trial.id}`} className="text-blue-500 hover:underline">
-                {trial.name}
+                {trial.name != '' ? trial.name : 'Unnamed Trial'}
               </a>
             </div>
           )

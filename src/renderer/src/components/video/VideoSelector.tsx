@@ -1,10 +1,11 @@
 import { isRecordingAtom, tempTrialInfoAtom } from '@/store'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
+import { useImmerAtom } from 'jotai-immer'
 import { useEffect, useState } from 'react'
 
 export const VideoSelector = () => {
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
-  const [tempTrialInfo, setTempTrialInfo] = useAtom(tempTrialInfoAtom)
+  const [tempTrialInfo, setTempTrialInfo] = useImmerAtom(tempTrialInfoAtom)
   const isRecording = useAtomValue(isRecordingAtom)
 
   useEffect(() => {
@@ -17,15 +18,9 @@ export const VideoSelector = () => {
 
   const handleSelect = (e) => {
     const device = devices.filter((device) => device.deviceId == e.target.value)
-    setTempTrialInfo((prev) => {
-      return {
-        ...prev,
-        videoInfo: {
-          ...prev.videoInfo,
-          label: device[0]?.label || '',
-          path: e.target.value
-        }
-      }
+    setTempTrialInfo((draft) => {
+      draft.settings.video.path = device[0].deviceId
+      draft.settings.video.label = device[0].label
     })
   }
 
@@ -33,7 +28,7 @@ export const VideoSelector = () => {
     <select
       className="bg-bg w-full rounded-md border border-white/20 bg-neutral-800 p-2.5 text-sm text-white duration-150"
       onChange={handleSelect}
-      value={tempTrialInfo.videoInfo.path}
+      value={tempTrialInfo.settings.video.path}
       disabled={isRecording}
     >
       <option value="">Select a camera</option>

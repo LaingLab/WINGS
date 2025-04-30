@@ -1,18 +1,16 @@
-import { trialLogsAtom } from '@/store'
-import { TrialLog } from '@shared/models'
-import { useSetAtom } from 'jotai'
+import { trialDataAtom } from '@renderer/store'
+import { useImmerAtom } from 'jotai-immer'
 import { useEffect } from 'react'
 
 export function useLogListener() {
-  const setTrialLogs = useSetAtom(trialLogsAtom)
+  const [_, setTrialLogs] = useImmerAtom(trialDataAtom)
 
   useEffect(() => {
     const unsub = window.context.onTrialLog((data: string) => {
-      setTrialLogs((prev: TrialLog[]) => {
-        const newLog = { data, time: new Date().toLocaleTimeString() }
-        const newData = [...prev, newLog]
-
-        return newData
+      setTrialLogs((draft) => {
+        const parsed = JSON.parse(data)
+        console.log('Log received: ', parsed)
+        draft.logs = [...(draft.logs || []), parsed]
       })
     })
     return () => unsub

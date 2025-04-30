@@ -1,5 +1,6 @@
-import { isRecordingAtom, tempTrialInfoAtom } from '@/store'
+import { isRecordingAtom, tempTrialInfoAtom, trialDataAtom } from '@/store'
 import { useAtom, useAtomValue } from 'jotai'
+import { useImmerAtom } from 'jotai-immer'
 import { CameraOff } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -10,13 +11,16 @@ const QUALITY_OPTIONS = {
 }
 
 export const VideoPreview = () => {
-  const { videoInfo } = useAtomValue(tempTrialInfoAtom)
+  const {
+    settings: { video: videoInfo }
+  } = useAtomValue(tempTrialInfoAtom)
   const [isRecording, setIsRecording] = useAtom(isRecordingAtom)
   const videoRef = useRef<HTMLVideoElement>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const recordingIdRef = useRef<string | null>(null)
   const [recordingStats, setRecordingStats] = useState({ chunks: 0, size: 0 })
+  const [trialData, setTrialData] = useImmerAtom(trialDataAtom)
 
   useEffect(() => {
     const startPreview = async () => {
@@ -56,17 +60,13 @@ export const VideoPreview = () => {
   }, [videoInfo.path])
 
   const startRecording = useCallback(async () => {
-    if (!streamRef.current || !videoInfo.fileName) {
-      console.error('Cannot start recording: stream or filename not available')
+    if (!streamRef.current || !videoInfo.path) {
+      console.error('Cannot start recording: stream or path not available')
       return false
     }
 
     try {
-      const { recordingId, filePath } = await window.context.startRecording({
-        fileName: videoInfo.fileName,
-        outputFolder: videoInfo.outputFolder,
-        format: videoInfo.fileName.split('.').pop() || 'webm'
-      })
+      const { recordingId, filePath } = await window.context.startRecording()
 
       recordingIdRef.current = recordingId
       console.log(`Starting recording to ${filePath}`)
@@ -91,13 +91,17 @@ export const VideoPreview = () => {
 
       mediaRecorderRef.current.start(1000) // Data update rate
       setIsRecording(true)
+      setTrialData((draft) => {
+        draft.videoPath = filePath
+      })
+      console.log('Recording started:', filePath)
 
       return true
     } catch (error) {
       console.error('Failed to start recording:', error)
       return false
     }
-  }, [videoInfo, streamRef, setIsRecording])
+  }, [videoInfo, streamRef, setIsRecording, setTrialData])
 
   const stopRecording = useCallback(async () => {
     if (!mediaRecorderRef.current || !recordingIdRef.current) {
@@ -136,7 +140,7 @@ export const VideoPreview = () => {
       console.error('Failed to stop recording:', error)
       return false
     }
-  }, [mediaRecorderRef, recordingIdRef, setIsRecording])
+  }, [mediaRecorderRef, recordingIdRef, setIsRecording, recordingStats.size])
 
   useEffect(() => {
     const handleVideoControl = (command: string) => {

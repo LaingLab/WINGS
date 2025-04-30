@@ -1,57 +1,42 @@
 export type TrialInfo = {
   id: string
   name: string
-  status: string
-  duration?: string
-  videoInfo: VideoInfo
-  arduinoInfo: ArduinoInfo
-  settings?: TrialSettings
-  data?: TrialData
+  description: string
+  dateCreated: string
+  lastOpened: string
+  settings: TrialSettings
 }
 
 export type TrialSettings = {
-  idk?: string
+  video: VideoSettings
+  arduino: ArduinoSettings
 }
 
-export type TrialData = {
-  events: TrialEvent[]
-  results?: TrialResults
-  sensorData?: string
-  logs?: TrialLog[]
-}
-
-export type TrialResults = {
-  duration: number
-  logFile: string
-  dataFile: string
-  eventFile: string
-  videoFile: string
-}
-
-export type TrialEvent = {
-  name: string
-  type: string
-  time: string
-}
-
-export type TrialLog = {
-  data: string
-  time: string
-}
-
-export type ArduinoInfo = {
+export type VideoSettings = {
   path: string
-  status: string
-  primed: boolean
+  label: string
+}
+
+export type ArduinoSettings = {
+  path: string
   pins: ArduinoPin[]
 }
 
 export type ArduinoPin = {
-  id?: string
   pin: string
-  type: string | 'led' | 'sensor' | 'swtich'
-  value: string
-  options?: Record<string, number>
+  type: string
+  value?: string
+  opts?: ArduinoPinOpts
+}
+
+export type ArduinoPinOpts = {
+  additionalPins?: ArduinoPin[]
+  startState?: string
+  frequency?: number
+  speed?: number
+  inputLed?: string
+  noLog?: boolean
+  threshold?: number
 }
 
 export type ArduinoLed = {
@@ -69,9 +54,37 @@ export type ArduinoPump = {
   pins: [number, number, number]
 }
 
-export type VideoInfo = {
-  label: string
-  path: string
-  fileName: string
-  outputFolder: string
+export type TrialData = {
+  id: string
+  status: string
+  duration: number
+  videoPath: string
+  logs: Log[]
+  events: Event[]
+  arduinoData: ArduinoData
+}
+
+export type ArduinoData = {
+  status: string
+  primed: boolean
+  pins: ArduinoPin[]
+}
+
+export type Log = {
+  time: string
+  type: string
+  data: string
+}
+
+export type Event = {
+  time: string
+  type: string
+  data: string
+}
+
+export type TrialResults = {
+  id: string
+  endTime: string
+  trialInfo: TrialInfo
+  trialData: TrialData
 }

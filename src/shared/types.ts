@@ -1,4 +1,4 @@
-import { TrialInfo } from './models'
+import { TrialInfo, TrialResults } from './models'
 
 // File
 export type FileExists = (filename: string) => boolean
@@ -7,11 +7,12 @@ export type ReadFile = (params: {
   filetype: 'txt' | 'json' | 'jsonl' | 'csv'
 }) => object
 export type SaveTrialInfo = (trialInfo: TrialInfo) => void
+export type SaveTrialResults = (trialResults: TrialResults) => void
 export type DeleteTrialInfo = () => void
 
 // Trial
 export type RunTrial = (trialInfo: TrialInfo) => void
-export type EndTrial = () => void
+export type EndTrial = (trialResults: TrialResults) => void
 export type ListTrials = () => Promise<{ id: string; name: string }[]>
 export type UpdateFileDir = (trialFolder?: string) => any
 
@@ -31,11 +32,7 @@ export type TogglePump = (params: {
 }) => void
 
 // Video
-export type StartRecording = (options: {
-  fileName?: string
-  outputFolder?: string
-  format?: 'webm' | 'mp4' | 'mov' | 'avi'
-}) => Promise<{ recordingId: string; filePath: string }>
+export type StartRecording = () => Promise<{ recordingId: string; filePath: string }>
 
 export type WriteVideoChunk = (data: {
   recordingId: string
