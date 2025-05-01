@@ -26,6 +26,7 @@ export type ArduinoPin = {
   pin: string
   type: string
   value?: string
+  timestamp?: string
   opts?: ArduinoPinOpts
 }
 

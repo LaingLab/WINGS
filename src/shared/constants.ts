@@ -27,6 +27,7 @@ export const defaultTrialData: TrialData = {
   duration: 0,
   logs: [],
   events: [],
+  videoPath: '',
   arduinoData: {
     status: 'idle',
     primed: false,

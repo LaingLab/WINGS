@@ -1,128 +1,108 @@
-import ffmpegPath from '@ffmpeg-installer/ffmpeg'
-import { ipcMain } from 'electron'
-import ffmpeg from 'fluent-ffmpeg'
 import * as fs from 'fs'
-import { createWriteStream } from 'fs'
 import * as path from 'path'
+
+import { ipcMain } from 'electron'
+import { createWriteStream, WriteStream } from 'fs'
 import { FILE_DIR } from './file'
 
-ffmpeg.setFfmpegPath(ffmpegPath.path)
+interface ActiveRecording {
+  fileStream: WriteStream
+  filePath: string
+  chunksWritten: number
+}
 
-const activeRecordings = new Map()
+const activeRecordings = new Map<string, ActiveRecording>()
 
 export function setupVideoHandlers() {
-  ipcMain.handle('video:start-recording', () => {
+  ipcMain.handle('video:start-recording', async () => {
     try {
       const outputDirectory = FILE_DIR
-
       if (!fs.existsSync(outputDirectory)) {
         fs.mkdirSync(outputDirectory, { recursive: true })
       }
 
-      const actualFileName = `temp-${Date.now()}`
-      const format = 'webm'
-      const finalFilePath = path.join(
-        outputDirectory,
-        actualFileName.includes(`.${format}`) ? actualFileName : `${actualFileName}.${format}`
-      )
+      const recordingId = `rec-${Date.now()}`
+      // Use a consistent naming scheme, directly saving as webm
+      const filePath = path.join(outputDirectory, `${recordingId}.webm`)
+      const fileStream = createWriteStream(filePath)
 
-      const tempFilePath = path.join(outputDirectory, `temp-${Date.now()}.webm`)
-      const fileStream = createWriteStream(tempFilePath)
-
-      const recordingId = Date.now().toString()
       activeRecordings.set(recordingId, {
         fileStream,
-        tempFilePath,
-        finalFilePath,
-        format,
-        chunks: 0
+        filePath,
+        chunksWritten: 0
       })
 
-      console.log(`Started recording to ${tempFilePath} (will convert to ${format})`)
-      return { recordingId, filePath: finalFilePath }
+      console.log(`[Video] Started recording: ${filePath}`)
+      return { recordingId, filePath }
     } catch (error) {
-      console.error('Failed to start recording:', error)
+      console.error('[Video] Failed to start recording:', error)
+      // Re-throw the error to ensure the promise rejects correctly
       throw error
     }
   })
 
   ipcMain.handle('video:write-chunk', async (_, { recordingId, chunk }) => {
+    const recording = activeRecordings.get(recordingId)
+    if (!recording) {
+      console.error(`[Video] Write chunk failed: No recording found with ID ${recordingId}`)
+      throw new Error(`No active recording found with ID ${recordingId}`)
+    }
+
     try {
-      const recording = activeRecordings.get(recordingId)
-      if (!recording) {
-        throw new Error(`No active recording found with ID ${recordingId}`)
-      }
-
-      const buffer = Buffer.from(chunk)
-      recording.fileStream.write(buffer)
-      recording.chunks++
-
-      return { success: true, chunksWritten: recording.chunks }
+      const buffer = Buffer.from(chunk) // Ensure chunk is a Buffer
+      await new Promise<void>((resolve, reject) => {
+        recording.fileStream.write(buffer, (err) => {
+          if (err) {
+            console.error('[Video] Error writing video chunk:', err)
+            reject(err)
+          } else {
+            recording.chunksWritten++
+            resolve()
+          }
+        })
+      })
+      return { success: true, chunksWritten: recording.chunksWritten }
     } catch (error) {
-      console.error('Failed to write video chunk:', error)
+      console.error('[Video] Failed to write video chunk:', error)
+      // Consider how to handle write errors, maybe stop recording?
+      // Re-throw the error
       throw error
     }
   })
 
   ipcMain.handle('video:stop-recording', async (_, { recordingId }) => {
+    const recording = activeRecordings.get(recordingId)
+    if (!recording) {
+      console.error(`[Video] Stop recording failed: No recording found with ID ${recordingId}`)
+      throw new Error(`No active recording found with ID ${recordingId}`)
+    }
+
     try {
-      const recording = activeRecordings.get(recordingId)
-      if (!recording) {
-        throw new Error(`No active recording found with ID ${recordingId}`)
-      }
-
-      recording.fileStream.end()
-
-      if (recording.format !== 'webm') {
-        console.log(`Converting WebM to ${recording.format}...`)
-
-        return new Promise((resolve, reject) => {
-          ffmpeg(recording.tempFilePath)
-            .outputOptions('-c:v libx264')
-            .output(recording.finalFilePath)
-            .on('end', () => {
-              console.log('Conversion finished')
-
-              // Rename temp file to video.wbem
-              const newFilePath = path.join(path.dirname(recording.tempFilePath), 'video.webm')
-              fs.rename(recording.tempFilePath, newFilePath, (err) => {
-                if (err) {
-                  console.error('Error renaming temp file:', err)
-                } else {
-                  console.log('Temp file renamed to', newFilePath)
-                }
-              })
-
-              const result = {
-                success: true,
-                filePath: recording.finalFilePath,
-                totalChunks: recording.chunks
-              }
-
-              activeRecordings.delete(recordingId)
-
-              resolve(result)
-            })
-            .on('error', (err) => {
-              console.error('Error converting video:', err)
-              reject(err)
-            })
-            .run()
+      await new Promise<void>((resolve) => {
+        recording.fileStream.end(() => {
+          console.log(`[Video] Finalized recording: ${recording.filePath}`)
+          resolve()
         })
-      } else {
-        const result = {
-          success: true,
-          filePath: recording.tempFilePath,
-          totalChunks: recording.chunks
-        }
+      })
 
-        activeRecordings.delete(recordingId)
+      const finalFilePath = recording.filePath
+      const totalChunks = recording.chunksWritten
+      activeRecordings.delete(recordingId)
 
-        console.log(`Finished recording to ${recording.tempFilePath} (${recording.chunks} chunks)`)
-        return result
-      }
+      console.log(`[Video] Recording stopped. Path: ${finalFilePath}, Chunks: ${totalChunks}`)
+      return { success: true, filePath: finalFilePath, totalChunks }
     } catch (error) {
-      console.error('Failed to stop recording:', error)
+      console.error('[Video] Failed to stop recording:', error)
+      // Attempt cleanup even on error
+      if (activeRecordings.has(recordingId)) {
+        try {
+          recording.fileStream.close() // Ensure stream is closed
+        } catch (closeError) {
+          console.error('[Video] Error closing stream during failed stop:', closeError)
+        }
+        activeRecordings.delete(recordingId)
+      }
+      // Re-throw the error
       throw error
     }
   })

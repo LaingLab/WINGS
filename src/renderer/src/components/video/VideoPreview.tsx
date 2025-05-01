@@ -1,158 +1,100 @@
-import { isRecordingAtom, tempTrialInfoAtom, trialDataAtom } from '@/store'
-import { useAtom, useAtomValue } from 'jotai'
-import { useImmerAtom } from 'jotai-immer'
+import { useVideoRecorder } from '@/hooks/useVideoRecorder' // Import the new hook
+import { tempTrialInfoAtom } from '@/store'
+import { useAtomValue } from 'jotai'
 import { CameraOff } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-
-const QUALITY_OPTIONS = {
-  mimeType: 'video/webm;codecs=vp9',
-  videoBitsPerSecond: 8000000, // 8 Mbps
-  audioBitsPerSecond: 128000 // 128 kbps
-}
+import { useEffect, useRef, useState } from 'react'
 
 export const VideoPreview = () => {
   const {
     settings: { video: videoInfo }
   } = useAtomValue(tempTrialInfoAtom)
-  const [isRecording, setIsRecording] = useAtom(isRecordingAtom)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const streamRef = useRef<MediaStream | null>(null)
-  const recordingIdRef = useRef<string | null>(null)
-  const [recordingStats, setRecordingStats] = useState({ chunks: 0, size: 0 })
-  const [trialData, setTrialData] = useImmerAtom(trialDataAtom)
+  const [stream, setStream] = useState<MediaStream | null>(null)
 
+  // Use the custom hook for recording logic
+  const { isRecording, recordingStats } = useVideoRecorder({
+    stream,
+    videoDeviceId: videoInfo.path
+  })
+
+  // Effect to manage the camera stream based on selected device
   useEffect(() => {
-    const startPreview = async () => {
-      if (!videoInfo.path) return
+    // Use a variable within the effect scope to track the current stream
+    let currentStream: MediaStream | null = null
 
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
+    const startPreview = async () => {
+      // Stop any previous stream cleanly before starting a new one
+      if (videoRef.current && videoRef.current.srcObject) {
+        const existingStream = videoRef.current.srcObject as MediaStream
+        existingStream.getTracks().forEach((track) => track.stop())
+        console.log('[Preview] Stopped previous stream tracks.')
+      }
+      // Clear the video source and state
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
+      }
+      setStream(null)
+
+      // If no device is selected, exit early
+      if (!videoInfo.path) {
+        console.log('[Preview] No video device selected.')
+        return
       }
 
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        console.log(`[Preview] Attempting to get stream for device: ${videoInfo.path}`)
+        // Request the new stream
+        const newStream = await navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: videoInfo.path,
             width: { ideal: 1920 },
             height: { ideal: 1080 },
             frameRate: { ideal: 60 }
           },
-          audio: false // Marking to remember for audio
+          audio: false // Keep audio disabled for now
         })
+        currentStream = newStream // Assign to the effect-scoped variable
+        setStream(newStream) // Update the state for the hook
 
-        streamRef.current = stream
+        // Assign the stream to the video element
         if (videoRef.current) {
-          videoRef.current.srcObject = stream
+          videoRef.current.srcObject = newStream
+          // Optional: Explicitly try to play, though autoPlay should handle it
+          videoRef.current.play().catch((e) => console.error('[Preview] Video play failed:', e))
+          console.log('[Preview] Assigned new stream to video element.')
+        } else {
+          console.warn('[Preview] videoRef.current was null when stream was ready.')
         }
       } catch (err) {
-        console.error('Failed to access camera:', err)
+        console.error('[Preview] Failed to access camera:', err)
+        setStream(null) // Clear stream state on error
+        if (videoRef.current) {
+          videoRef.current.srcObject = null // Clear video source on error
+        }
+        // Stop tracks if stream was partially obtained before error
+        if (currentStream) {
+          currentStream.getTracks().forEach((track) => track.stop())
+        }
       }
     }
 
     startPreview()
 
+    // Cleanup function: Stops the tracks of the stream created in *this* effect run
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
+      console.log('[Preview] Cleanup effect running.')
+      if (currentStream) {
+        currentStream.getTracks().forEach((track) => track.stop())
+        console.log('[Preview] Stopped stream tracks in cleanup.')
+      }
+      // Also clear the video element source on cleanup
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
       }
     }
+    // Rerun effect ONLY when the video device path changes.
+    // Removing `stream` prevents the effect from rerunning when setStream is called.
   }, [videoInfo.path])
-
-  const startRecording = useCallback(async () => {
-    if (!streamRef.current || !videoInfo.path) {
-      console.error('Cannot start recording: stream or path not available')
-      return false
-    }
-
-    try {
-      const { recordingId, filePath } = await window.context.startRecording()
-
-      recordingIdRef.current = recordingId
-      console.log(`Starting recording to ${filePath}`)
-
-      const options = { ...QUALITY_OPTIONS }
-      mediaRecorderRef.current = new MediaRecorder(streamRef.current, options)
-
-      mediaRecorderRef.current.ondataavailable = async (event) => {
-        if (event.data.size > 0 && recordingIdRef.current) {
-          const buffer = await event.data.arrayBuffer()
-          const result = await window.context.writeVideoChunk({
-            recordingId: recordingIdRef.current,
-            chunk: buffer
-          })
-
-          setRecordingStats((prev) => ({
-            chunks: result.chunksWritten,
-            size: prev.size + buffer.byteLength
-          }))
-        }
-      }
-
-      mediaRecorderRef.current.start(1000) // Data update rate
-      setIsRecording(true)
-      setTrialData((draft) => {
-        draft.videoPath = filePath
-      })
-      console.log('Recording started:', filePath)
-
-      return true
-    } catch (error) {
-      console.error('Failed to start recording:', error)
-      return false
-    }
-  }, [videoInfo, streamRef, setIsRecording, setTrialData])
-
-  const stopRecording = useCallback(async () => {
-    if (!mediaRecorderRef.current || !recordingIdRef.current) {
-      return false
-    }
-
-    try {
-      return new Promise<boolean>((resolve) => {
-        mediaRecorderRef.current!.onstop = async () => {
-          try {
-            const result = await window.context.stopRecording({
-              recordingId: recordingIdRef.current!
-            })
-
-            setIsRecording(false)
-            console.log(`Recording saved to ${result.filePath}`)
-            console.log(
-              `Recorded ${result.totalChunks} chunks, approximately ${Math.round(recordingStats.size / 1024 / 1024)}MB`
-            )
-
-            mediaRecorderRef.current = null
-            recordingIdRef.current = null
-            setRecordingStats({ chunks: 0, size: 0 })
-
-            resolve(true)
-          } catch (err) {
-            console.error('Error finalizing recording:', err)
-            resolve(false)
-          }
-        }
-
-        mediaRecorderRef.current!.requestData()
-        mediaRecorderRef.current!.stop()
-      })
-    } catch (error) {
-      console.error('Failed to stop recording:', error)
-      return false
-    }
-  }, [mediaRecorderRef, recordingIdRef, setIsRecording, recordingStats.size])
-
-  useEffect(() => {
-    const handleVideoControl = (command: string) => {
-      if (command === 'start-recording') {
-        startRecording()
-      } else if (command === 'stop-recording') {
-        stopRecording()
-      }
-    }
-    const unsubscribe = window.context.onVideoControl(handleVideoControl)
-    return () => unsubscribe()
-  }, [startRecording, stopRecording])
 
   return (
     <>
@@ -163,17 +105,22 @@ export const VideoPreview = () => {
             className="h-full w-full rounded-xl object-cover"
             autoPlay
             playsInline
-            muted
+            muted // Keep preview muted
           />
           {isRecording && (
             <div className="absolute top-2 right-2 flex items-center rounded-md bg-red-500 px-2 py-1 text-xs text-white">
               <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-white" />
-              Recording {/** recordingStats.chunks > 0 && `(${recordingStats.chunks} chunks)` */}
+              Recording{' '}
+              {recordingStats.chunks > 0 &&
+                `(${recordingStats.chunks} chunks, ${Math.round(recordingStats.size / 1024)} KB)`}
             </div>
           )}
         </div>
       ) : (
-        <CameraOff size={80} className="text-neutral-800" />
+        // Display placeholder if no camera is selected
+        <div className="flex h-full w-full items-center justify-center rounded-xl bg-neutral-200">
+          <CameraOff size={60} className="text-neutral-500" />
+        </div>
       )}
     </>
   )
