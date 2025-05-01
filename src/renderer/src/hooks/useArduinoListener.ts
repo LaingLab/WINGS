@@ -1,5 +1,5 @@
 import { trialDataAtom } from '@/store'
-import { ArduinoPin } from '@shared/models'
+import { Pin } from '@shared/models'
 import { useImmerAtom } from 'jotai-immer'
 import { useEffect } from 'react'
 
@@ -9,7 +9,7 @@ export function useArduinoListener() {
   useEffect(() => {
     const unsub = window.context.onArduinoPinUpdate((data: string) => {
       try {
-        const parsed: ArduinoPin = JSON.parse(data)
+        const parsed: Pin = JSON.parse(data)
         console.log('Pin update recieved: ', parsed)
 
         setTrialData((draft) => {

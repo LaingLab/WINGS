@@ -1,4 +1,4 @@
-import { ArduinoPin, TrialResults } from '@shared/models'
+import { Pin, TrialResults } from '@shared/models'
 import { ArrowLeft, CameraOff, Pause, Play } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
@@ -23,7 +23,7 @@ export const ResultsPage = () => {
   const [trials, setTrials] = useState<TrialList[]>([])
   const [selectedTrial, setSelectedTrial] = useState<string>('')
   const [logs, setLogs] = useState<string>('')
-  const [sensorReadings, setSensorReadings] = useState<ArduinoPin[]>([])
+  const [sensorReadings, setSensorReadings] = useState<Pin[]>([])
   const [events, setEvents] = useState<RawEvent[]>([])
   const [videoPath, setVideoPath] = useState<string>('')
   const [videoStartTime, setVideoStartTime] = useState<number | null>(null)
@@ -66,7 +66,7 @@ export const ResultsPage = () => {
       })
       if (sensorData) {
         console.log('Sensor Data', sensorData)
-        setSensorReadings(sensorData as ArduinoPin[])
+        setSensorReadings(sensorData as Pin[])
       }
 
       const eventsData = await window.context.readFile({ filename: 'events', filetype: 'jsonl' })

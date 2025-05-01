@@ -32,7 +32,10 @@
   },
   "explorerExclude.backup": {},
   "github.copilot.enable": {
-    "*": true,
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
     "COBOL": true,
     "COBOLIT": true,
     "ACUCOBOL": true,

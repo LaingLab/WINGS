@@ -1,4 +1,4 @@
-import { ArduinoPin } from '@shared/models'
+import { Pin } from '@shared/models'
 import { mainWindow } from '../..'
 
 import { saveEvent, saveSensorReading } from '../file'
@@ -15,7 +15,7 @@ export const updateInfo = (data) => {
   mainWindow.webContents.send('arduino-info', JSON.stringify(data))
 }
 
-export const updatePin = (data: string | null, object?: ArduinoPin) => {
+export const updatePin = (data: string | null, object?: Pin) => {
   if (data) {
     log(data, 'Arduino-Send.updatePin')
     mainWindow.webContents.send('arduino-pin', data)

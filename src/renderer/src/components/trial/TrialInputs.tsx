@@ -1,17 +1,11 @@
 import { tempTrialInfoAtom } from '@/store'
 import { useImmerAtom } from 'jotai-immer'
-import { X } from 'lucide-react'
+import { ArduinoPinsInput } from '../arduino/ArduinoPinsInput'
 import { VideoSelector } from '../video/VideoSelector'
 import { TopTrialActions } from './TrialActions'
 
 export const TrialInputs = () => {
   const [tempTrialInfo, setTempTrialInfo] = useImmerAtom(tempTrialInfoAtom)
-
-  const handleAddPin = () => {
-    setTempTrialInfo((draft) => {
-      draft.settings.arduino.pins.push({ pin: '13', type: 'led', value: 'off' })
-    })
-  }
 
   return (
     <div className="trialInputs flex-grow">
@@ -57,64 +51,11 @@ export const TrialInputs = () => {
             {/* <button type="button" onClick={() => window.context.arduinoConnect()}>
               Connect
             </button> */}
-            <button type="button" onClick={() => window.context.primeArduino()}>
-              Prime
-            </button>
           </div>
         </div>
 
         {/* Arduino Pins */}
-        <div className="space-y-1">
-          <button onClick={handleAddPin}>Add Pin</button>
-          {tempTrialInfo.settings.arduino.pins.map((pin, i) => (
-            <div key={i} className="flex gap-1">
-              <button
-                className="flex items-center justify-center"
-                onClick={() =>
-                  setTempTrialInfo((draft) => {
-                    draft.settings.arduino.pins.splice(i, 1)
-                  })
-                }
-              >
-                <X />
-              </button>
-              <select
-                className="btn w-24 bg-neutral-800 px-1"
-                value={pin.type}
-                onChange={(e) =>
-                  setTempTrialInfo((draft) => {
-                    draft.settings.arduino.pins[i].type = e.target.value
-                  })
-                }
-              >
-                <option value="led">led</option>
-                <option value="switch">switch</option>
-                <option value="sensor">sensor</option>
-                <option value="pump">pump</option>
-              </select>
-              <input
-                type="text"
-                placeholder="pin"
-                value={pin.pin}
-                onChange={(e) =>
-                  setTempTrialInfo((draft) => {
-                    draft.settings.arduino.pins[i].pin = e.target.value
-                  })
-                }
-              />
-              <input
-                type="text"
-                placeholder="value"
-                value={pin.value}
-                onChange={(e) =>
-                  setTempTrialInfo((draft) => {
-                    draft.settings.arduino.pins[i].value = e.target.value
-                  })
-                }
-              />
-            </div>
-          ))}
-        </div>
+        <ArduinoPinsInput />
       </div>
     </div>
   )

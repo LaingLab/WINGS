@@ -20,13 +20,14 @@
 - [x] Basic Results View
 - [x] Improve Logging
 - [x] Adjust models for better data handling (new branch)
-- [ ] Refactoring
-  - [x] Add Home page
-  - [x] Trial states
-  - [x] Jotai State Mgmt
-  - [ ] Backend mgmt
-  - [ ] Make Reusable components
-  - [ ] Video saving/loading (w/audio)
+- [x] Arduino Delay
+- [x] Remove priming/unpriming - make local to pin
+- [x] Load result page based on params
+- [x] Modals
+- [ ] Video saving/loading w/audio
+- [ ] Switch activation buttons
+- [ ] Arduino selector
+- [ ] Fix debug page
 
 ## Notes
 

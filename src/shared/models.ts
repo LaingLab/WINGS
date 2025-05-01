@@ -19,40 +19,39 @@ export type VideoSettings = {
 
 export type ArduinoSettings = {
   path: string
-  pins: ArduinoPin[]
+  pins: Pin[]
 }
 
-export type ArduinoPin = {
+export type Pin = {
+  type: 'pin' | 'led' | 'pump' | 'sensor' | 'switch'
   pin: string
-  type: string
+  pins?: number[]
+  active?: boolean
+  log?: boolean
+  label?: string
+  state?: string
   value?: string
   timestamp?: string
-  opts?: ArduinoPinOpts
 }
 
-export type ArduinoPinOpts = {
-  additionalPins?: ArduinoPin[]
-  startState?: string
+export interface Led extends Pin {
   frequency?: number
-  speed?: number
   inputLed?: string
-  noLog?: boolean
+}
+
+export interface Pump extends Pin {
+  speed?: number
+}
+
+export interface Sensor extends Pin {
+  freqency?: number
   threshold?: number
 }
 
-export type ArduinoLed = {
-  state: string
-  pin?: number
-  freq?: number
-  inputLed?: any
-  noLog?: boolean
-}
-
-export type ArduinoPump = {
-  id?: string
-  speed?: number
-  state?: string
-  pins: [number, number, number]
+export interface Switch extends Pin {
+  debounce?: number
+  delay?: number
+  action?: any
 }
 
 export type TrialData = {
@@ -68,7 +67,7 @@ export type TrialData = {
 export type ArduinoData = {
   status: string
   primed: boolean
-  pins: ArduinoPin[]
+  pins: Pin[]
 }
 
 export type Log = {
