@@ -1,7 +1,7 @@
 import { tempTrialInfoAtom, trialDataAtom, trialInfoAtom } from '@/store'
 import { defaultTrialInfo } from '@shared/constants'
 import { useAtom, useAtomValue } from 'jotai'
-import { ChartSpline, Cog, Home, RefreshCcwDot, Save } from 'lucide-react'
+import { ChartSpline, Home, RefreshCcwDot, Save } from 'lucide-react'
 import { Link } from 'react-router'
 import { twMerge } from 'tailwind-merge'
 
@@ -27,19 +27,14 @@ export const TopTrialActions = () => {
   const canReset = tempTrialInfo !== defaultTrialInfo
 
   return (
-    <div className="flex justify-between gap-1">
+    <div className="btns flex justify-between gap-1">
       <div className="flex gap-1">
         <Link to="/">
           <button className="flex w-10 items-center justify-center text-white/80">
             <Home />
           </button>
         </Link>
-        <Link to="/debug">
-          <button className="flex w-10 items-center justify-center text-white/80">
-            <Cog />
-          </button>
-        </Link>
-        <Link to="/results">
+        <Link to={`/results/${trialInfo.id}`}>
           <button className="flex w-10 items-center justify-center text-white/80">
             <ChartSpline />
           </button>
@@ -93,7 +88,7 @@ export const BottomTrialActions = () => {
   }
 
   return (
-    <div className="trialInputs flex gap-1">
+    <div className="trialInputs btns flex gap-1">
       <button onClick={handleRun}>Run</button>
       <button onClick={handleEnd}>End</button>
     </div>

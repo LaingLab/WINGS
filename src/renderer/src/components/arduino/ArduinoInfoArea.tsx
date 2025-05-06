@@ -28,7 +28,7 @@ export const ArduinoInfoArea = () => {
       <div className="w-fit">
         <p className="font-semibold">Pins</p>
         <div className="flex flex-wrap gap-1">
-          {arduinoData.pins.map((pin) => (
+          {arduinoInfo.pins.map((pin) => (
             <div
               key={pin.pin}
               className="rounded-xl border border-white/10 bg-neutral-900/50 p-2 text-center"

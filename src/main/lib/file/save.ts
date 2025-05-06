@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { ArduinoPin, Event, TrialInfo, TrialResults } from '@shared/models'
+import { Event, Pin, TrialInfo, TrialResults } from '@shared/models'
 
 import { log } from '../log'
 import { FILE_DIR } from './file'
@@ -69,7 +69,7 @@ export function saveTxtLog(message: string) {
   fs.appendFileSync(logPath, line, 'utf-8')
 }
 
-export function saveSensorReading(sensorData: ArduinoPin) {
+export function saveSensorReading(sensorData: Pin) {
   const dir = FILE_DIR
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
 

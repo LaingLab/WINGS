@@ -15,7 +15,7 @@ export const VideoInfoArea = () => {
         </div>
         <div>
           <p className="text-white/30">Device ID</p>
-          <p className="line-clamp-1 break-all">{trialInfo.settings.video.path || 'n/a'}</p>
+          <p className="break-all">{trialInfo.settings.video.path || 'n/a'}</p>
         </div>
       </div>
       <div className="flex aspect-video h-fit w-3/4 items-center justify-center rounded-xl border border-white/10 bg-neutral-900/50">

@@ -32,7 +32,7 @@ export function useTrial() {
   }, [id, setTrialInfo, setTempTrialInfo])
 
   useEffect(() => {
-    const unsub = window.context.onTrialInfo((data: string) => {
+    const unsub: any = window.context.onTrialInfo((data: string) => {
       try {
         console.log('Recieved status update: ', data)
         const parsed = JSON.parse(data)
@@ -51,6 +51,6 @@ export function useTrial() {
       }
     })
 
-    return () => unsub
+    return () => unsub()
   }, [setTrialInfo])
 }

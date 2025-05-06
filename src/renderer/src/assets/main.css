@@ -52,6 +52,10 @@
     @apply block w-full rounded-md border border-neutral-600 bg-neutral-800 p-1 text-sm text-white placeholder-neutral-600 focus:border-blue-500 focus:ring-blue-500;
   }
 
+  .btns button {
+    @apply w-full rounded-md border border-white/15 bg-neutral-700/50 py-1 duration-150 hover:bg-transparent;
+  }
+
   .btn {
     @apply w-full rounded-md border border-white/15 bg-neutral-700/50 py-1 duration-150 hover:bg-transparent;
   }

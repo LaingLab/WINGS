@@ -14,10 +14,11 @@ export const TrialInputs = () => {
         <TopTrialActions />
 
         {/* Trial Info */}
-        <div className="space-y-1">
+        <div className="space-y-0.5">
+          <p className="pl-0.5 text-sm text-white/50">Trial Name</p>
           <input
             type="text"
-            placeholder="Trial Name"
+            placeholder="Type Something..."
             value={tempTrialInfo.name ?? ''}
             onChange={(e) =>
               setTempTrialInfo((draft) => {
@@ -28,34 +29,19 @@ export const TrialInputs = () => {
         </div>
 
         {/* Video Info */}
-        <div className="space-y-1">
+        <div className="space-y-0.5">
+          <p className="pl-0.5 text-sm text-white/50">Video Input Device</p>
           <VideoSelector />
           {/* <button type="button">Choose Output Folder</button> */}
         </div>
 
-        {/* Arduino Info */}
-        <div className="space-y-1">
-          <input
-            type="text"
-            placeholder="Arduino Path"
-            value={tempTrialInfo.settings.arduino.path}
-            onChange={(e) =>
-              setTempTrialInfo((draft) => {
-                draft.settings.arduino.path = e.target.value
-              })
-            }
-          />
-
-          {/* Btns */}
-          <div className="flex gap-1">
-            {/* <button type="button" onClick={() => window.context.arduinoConnect()}>
-              Connect
-            </button> */}
-          </div>
-        </div>
+        {/* Arudino Input */}
 
         {/* Arduino Pins */}
-        <ArduinoPinsInput />
+        <div className="space-y-0.5">
+          <p className="pl-0.5 text-sm text-white/50">Arduino Options</p>
+          <ArduinoPinsInput />
+        </div>
       </div>
     </div>
   )

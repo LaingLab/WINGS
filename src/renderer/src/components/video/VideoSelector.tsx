@@ -26,7 +26,7 @@ export const VideoSelector = () => {
 
   return (
     <select
-      className="bg-bg w-full rounded-md border border-white/20 bg-neutral-800 p-2.5 text-sm text-white duration-150"
+      className="bg-bg w-full rounded-md border border-white/20 bg-neutral-800 p-2 text-sm text-white duration-150"
       onChange={handleSelect}
       value={tempTrialInfo.settings.video.path}
       disabled={isRecording}

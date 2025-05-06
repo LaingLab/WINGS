@@ -6,13 +6,13 @@ export function useLogListener() {
   const [_, setTrialLogs] = useImmerAtom(trialDataAtom)
 
   useEffect(() => {
-    const unsub = window.context.onTrialLog((data: string) => {
+    const unsub: any = window.context.onTrialLog((data: string) => {
       setTrialLogs((draft) => {
         const parsed = JSON.parse(data)
         console.log('Log received: ', parsed)
         draft.logs = [...(draft.logs || []), parsed]
       })
     })
-    return () => unsub
+    return () => unsub()
   }, [setTrialLogs])
 }

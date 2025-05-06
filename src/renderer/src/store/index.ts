@@ -14,16 +14,7 @@ export const trialSettingsAtom = atom<TrialInfo['settings']>((get) => {
 export const trialDataAtom = atom<TrialData>(defaultTrialData)
 
 // Trial Results Atoms
-export const trialResultsAtom = atom<TrialResults>((get) => {
-  const trialData = get(trialDataAtom)
-  const trialInfo = get(trialInfoAtom)
-  return {
-    id: trialData.id,
-    endTime: new Date().toISOString(),
-    trialInfo: trialInfo,
-    trialData: trialData
-  }
-})
+export const trialResultsAtom = atom<TrialResults | null>(null)
 
 // Video Atoms
 export const isRecordingAtom = atom(false)

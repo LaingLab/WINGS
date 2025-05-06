@@ -4,4 +4,4 @@ printWidth: 100
 trailingComma: none
 tabWidth: 2
 plugins:
-    - prettier-plugin-tailwindcss
+  - prettier-plugin-tailwindcss

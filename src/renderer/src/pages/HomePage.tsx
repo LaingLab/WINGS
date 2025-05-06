@@ -1,6 +1,7 @@
 import { defaultTrialInfo } from '@shared/constants'
 import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router'
 
 type TrialList = {
   id: string
@@ -12,6 +13,7 @@ export function HomePage() {
 
   useEffect(() => {
     async function fetchTrials() {
+      await window.context.updateFileDir()
       await window.context
         .listTrials()
         .then((trialList: TrialList[]) => setTrials(trialList))
@@ -35,29 +37,43 @@ export function HomePage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2 p-4">
-      <div className="flex gap-2 text-4xl font-bold tracking-tight">
-        <p>Home</p>
-        <button
-          className="rounded-full border border-white/15 bg-neutral-900 p-2 duration-150 hover:bg-neutral-800"
-          onClick={handleCreateTrial}
-        >
-          <Plus />
-        </button>
+    <div className="flex h-screen items-center justify-center gap-20 p-4">
+      <div className="flex flex-col gap-2">
+        <p className="text-8xl font-light tracking-tight">WINGS</p>
+        <p className="text-white/50">A testing software for LaingLab's GLIDE</p>
       </div>
-      {trials.length > 0 ? (
-        trials.map((trial) => {
-          return (
-            <div key={trial.id} className="flex flex-col items-center justify-center gap-2">
-              <a href={`/trial/${trial.id}`} className="text-blue-500 hover:underline">
-                {trial.name != '' ? trial.name : 'Unnamed Trial'}
-              </a>
-            </div>
-          )
-        })
-      ) : (
-        <p>No trials found</p>
-      )}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-3xl">Trials</p>
+          <button
+            className="rounded-full border border-white/15 bg-neutral-900 p-2 duration-150 hover:bg-neutral-800"
+            onClick={handleCreateTrial}
+          >
+            <Plus />
+          </button>
+        </div>
+        {trials.length > 0 ? (
+          trials.map((trial) => {
+            return (
+              <Link
+                key={trial.id}
+                to={`/trial/${trial.id}`}
+                className="flex w-80 flex-col items-center justify-center gap-2 rounded-md border border-white/20 bg-neutral-900 py-5"
+              >
+                {trial.name != '' ? (
+                  <p>
+                    {trial.name} <span className="text-white/50"> - {trial.id}</span>
+                  </p>
+                ) : (
+                  'Unnamed Trial'
+                )}
+              </Link>
+            )
+          })
+        ) : (
+          <p>No trials found</p>
+        )}
+      </div>
     </div>
   )
 }

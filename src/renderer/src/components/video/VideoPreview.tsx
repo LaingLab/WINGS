@@ -118,8 +118,8 @@ export const VideoPreview = () => {
         </div>
       ) : (
         // Display placeholder if no camera is selected
-        <div className="flex h-full w-full items-center justify-center rounded-xl bg-neutral-200">
-          <CameraOff size={60} className="text-neutral-500" />
+        <div className="flex h-full w-full items-center justify-center rounded-xl bg-neutral-900">
+          <CameraOff size={60} className="text-neutral-950" />
         </div>
       )}
     </>
