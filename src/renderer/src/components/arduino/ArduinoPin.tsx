@@ -79,6 +79,18 @@ export const ArduinoPin = ({ pin, i }: { pin: any; i: number }) => {
               }}
             />
 
+            <input
+              className="input w-full"
+              type="text"
+              placeholder="Pin"
+              value={pin.pin}
+              onChange={(e) => {
+                setTempTrialInfo((draft) => {
+                  draft.settings.arduino.pins[i].pin = e.target.value
+                })
+              }}
+            />
+
             <select
               className="btn w-24 bg-neutral-800 px-1"
               value={pin.type}

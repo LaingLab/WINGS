@@ -6,11 +6,11 @@ export class PumpController {
   int1: five.Pin
   int2: five.Pin
 
-  constructor(enaPin, int1Pin, int2Pin) {
-    log(`Created new pump controller: (${enaPin}, ${int1Pin}, ${int2Pin})`)
-    this.ena = new five.Pin({ pin: enaPin })
+  constructor(int1Pin, int2Pin, enaPin) {
+    log(`Created new pump controller: (${int1Pin}, ${int2Pin}, ${enaPin})`)
     this.int1 = new five.Pin({ pin: int1Pin })
     this.int2 = new five.Pin({ pin: int2Pin })
+    this.ena = new five.Pin({ pin: enaPin })
   }
 
   start(speed) {
@@ -22,9 +22,9 @@ export class PumpController {
 
   stop() {
     log(`Pump @ pin ${this.ena.pin} stopped`)
-    this.ena.write(0)
     this.int1.low()
     this.int2.low()
+    this.ena.write(0)
   }
 
   reverse(speed) {

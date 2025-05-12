@@ -1,11 +1,13 @@
 import { TrialLogArea } from '@/components'
-import { trialDataAtom } from '@renderer/store'
+import { trialDataAtom, trialInfoAtom } from '@renderer/store'
 import { useAtomValue } from 'jotai'
 import { ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router'
+import { Link, useParams } from 'react-router'
 
 export const DebugPage = () => {
+  const trialInfo = useAtomValue(trialInfoAtom)
   const trialData = useAtomValue(trialDataAtom)
+  const { id } = useParams()
 
   const toggleLed = (pin: number, state: string) => {
     window.context.toggleLed({
@@ -14,9 +16,9 @@ export const DebugPage = () => {
     })
   }
 
-  const togglePump = (pin: number, state: string, speed?: number, reversePins = false) => {
+  const togglePump = (pins: [number, number, number], state: string, speed?: number) => {
     window.context.togglePump({
-      pins: reversePins ? [pin, pin - 1, pin - 2] : [pin, pin + 1, pin + 2],
+      pins,
       state,
       speed
     })
@@ -27,7 +29,7 @@ export const DebugPage = () => {
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-3">
           <Link
-            to="/"
+            to={`/trial/${id}`}
             className="rounded-full bg-white p-1 text-black duration-150 hover:bg-white/50"
           >
             <ArrowLeft size={22} />
@@ -41,7 +43,7 @@ export const DebugPage = () => {
           <p>Status: {trialData.arduinoData.status}</p>
         </div>
         <div className="space-y-1">
-          {trialData.arduinoData.pins.map((pin, i) => (
+          {trialInfo.settings.arduino.pins.map((pin, i) => (
             <div key={i} className="flex w-100 justify-between gap-1">
               <div className="flex gap-1">
                 <p className="input w-24 bg-neutral-800">{pin.type}</p>
@@ -61,17 +63,40 @@ export const DebugPage = () => {
                 <div className="flex gap-1">
                   <button
                     className="btn w-20"
-                    onClick={() => togglePump(Number(pin.pin), 'reverse', 25)}
+                    onClick={() =>
+                      togglePump(
+                        (pin.pins as [number, number, number]) ??
+                          ([-1, -1, -1] as [number, number, number]),
+                        'reverse',
+                        25
+                      )
+                    }
                   >
                     reverse
                   </button>
                   <button
                     className="btn w-10"
-                    onClick={() => togglePump(Number(pin.pin), 'on', 25, Number(pin.pin) === 10)}
+                    onClick={() =>
+                      togglePump(
+                        (pin.pins as [number, number, number]) ??
+                          ([-1, -1, -1] as [number, number, number]),
+                        'on',
+                        25
+                      )
+                    }
                   >
                     on
                   </button>
-                  <button className="btn w-10" onClick={() => togglePump(Number(pin.pin), 'off')}>
+                  <button
+                    className="btn w-10"
+                    onClick={() =>
+                      togglePump(
+                        (pin.pins as [number, number, number]) ??
+                          ([-1, -1, -1] as [number, number, number]),
+                        'off'
+                      )
+                    }
+                  >
                     off
                   </button>
                 </div>

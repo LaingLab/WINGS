@@ -34,6 +34,8 @@
 - Make pump pins discrete
 - Frontend btn unprime state
 
+### Arduino Pin Stuff
+
 ## Other Stuff
 
 ### Yap Area

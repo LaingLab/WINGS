@@ -13,7 +13,7 @@ export async function realCycle(pins?: ArduinoPin) {
   await wait(1000)
 
   arduinoLog('Testing pump #1 (10% speed)')
-  const pump1 = new PumpController(11, 12, 13)
+  const pump1 = new PumpController(13, 12, 11)
   pump1.start(25)
 
   await wait(3250)
@@ -21,7 +21,7 @@ export async function realCycle(pins?: ArduinoPin) {
   pump1.stop()
 
   arduinoLog('Testing pump #2 (10% speed)')
-  const pump2 = new PumpController(10, 9, 8)
+  const pump2 = new PumpController(8, 9, 10)
   pump2.start(25)
 
   await wait(1250)

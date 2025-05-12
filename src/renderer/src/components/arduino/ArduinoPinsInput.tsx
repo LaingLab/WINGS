@@ -17,7 +17,7 @@ export const ArduinoPinsInput = () => {
     <div>
       <div className="space-y-1">
         <div className="btns flex gap-1">
-          <Link to="/debug">
+          <Link to={`/debug/${tempTrialInfo.id}`}>
             <button className="flex w-10 items-center justify-center text-white/80">
               <Cog />
             </button>
