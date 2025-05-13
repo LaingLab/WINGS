@@ -24,6 +24,7 @@
 - [x] Remove priming/unpriming - make local to pin
 - [x] Load result page based on params
 - [x] Modals
+- [ ] Sleap integration
 - [ ] Video saving/loading w/audio
 - [ ] Switch activation buttons
 - [ ] Arduino selector
